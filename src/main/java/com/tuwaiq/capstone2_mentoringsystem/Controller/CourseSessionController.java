@@ -23,14 +23,10 @@ public class CourseSessionController {
         if (errors.hasErrors()){
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
         }else {
-            String value= courseSessionService.addCourseSession(courseSession);
-            switch (value){
-                case "ok":
-                    return ResponseEntity.status(200).body(new ApiResponse("The course session have been added successfully"));
-                case "course id error":
-                    return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
-                default:
-                    return ResponseEntity.status(400).body(new ApiResponse("General error"));
+            if (courseSessionService.addCourseSession(courseSession)){
+                return ResponseEntity.status(200).body(new ApiResponse("The course session have been added successfully"));
+            }else {
+                return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
             }
         }
     }

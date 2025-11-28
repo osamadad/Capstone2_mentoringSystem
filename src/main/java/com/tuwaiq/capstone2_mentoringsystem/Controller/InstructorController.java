@@ -26,14 +26,10 @@ public class InstructorController {
         if (errors.hasErrors()){
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
         }else {
-            String value= instructorService.addInstructor(instructor);
-            switch (value){
-                case "ok":
-                    return ResponseEntity.status(200).body(new ApiResponse("The instructor have been added successfully, pleas wait for our admins to approve of you"));
-                case "category id":
-                    return ResponseEntity.status(400).body(new ApiResponse("There are no categories with this id found"));
-                default:
-                    return ResponseEntity.status(400).body(new ApiResponse("General error"));
+            if (instructorService.addInstructor(instructor)){
+                return ResponseEntity.status(200).body(new ApiResponse("The instructor have been added successfully, pleas wait for our admins to approve of you"));
+            }else {
+                return ResponseEntity.status(400).body(new ApiResponse("There are no categories with this id found"));
             }
         }
     }

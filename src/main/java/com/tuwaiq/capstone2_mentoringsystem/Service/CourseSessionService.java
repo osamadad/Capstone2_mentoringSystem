@@ -16,13 +16,13 @@ public class CourseSessionService {
     private final CourseSessionRepository courseSessionRepository;
     private final CourseRepository courseRepository;
 
-    public String addCourseSession(CourseSession courseSession){
+    public Boolean addCourseSession(CourseSession courseSession){
         Course course = courseRepository.findCourseById(courseSession.getCourseId());
         if (course==null){
-            return "course id error";
+            return false;
         }
         courseSessionRepository.save(courseSession);
-        return "ok";
+        return true;
     }
 
     public List<CourseSession> getCourseSessions(){

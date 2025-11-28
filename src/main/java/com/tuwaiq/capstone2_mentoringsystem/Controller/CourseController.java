@@ -60,6 +60,10 @@ public class CourseController {
                     return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
                 case "instructor id mismatch":
                     return ResponseEntity.status(400).body(new ApiResponse("You can't update a course that is not yours"));
+                case "instructor id error":
+                    return ResponseEntity.status(400).body(new ApiResponse("You can't change the instructor of the course"));
+                case "category id error":
+                    return ResponseEntity.status(400).body(new ApiResponse("You can't change the category of the course"));
                 default:
                     return ResponseEntity.status(400).body(new ApiResponse("General error"));
             }

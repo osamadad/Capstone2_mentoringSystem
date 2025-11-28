@@ -60,6 +60,8 @@ public class ReviewController {
                     return ResponseEntity.status(400).body(new ApiResponse("There are no reviews with this id found"));
                 case "user id mismatch":
                     return ResponseEntity.status(400).body(new ApiResponse("You can't update a review that is not yours"));
+                case "user id error":
+                    return ResponseEntity.status(400).body(new ApiResponse("You can't update a review to a new user"));
                 case "enrollment id error":
                     return ResponseEntity.status(400).body(new ApiResponse("You can't update a review to a new enrollment"));
                 default:

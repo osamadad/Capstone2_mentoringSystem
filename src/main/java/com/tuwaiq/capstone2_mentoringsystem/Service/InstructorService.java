@@ -20,15 +20,15 @@ public class InstructorService {
     private final InstructorRepository instructorRepository;
     private final CategoryRepository categoryRepository;
 
-    public String addInstructor(Instructor instructor){
+    public Boolean addInstructor(Instructor instructor){
         Category category = categoryRepository.findCategoryById(instructor.getCategoryId());
         if (category==null){
-            return "category id error";
+            return false;
         }
         instructor.setStatus("pending");
         instructor.setRating(0.0);
         instructorRepository.save(instructor);
-        return "ok";
+        return true;
     }
 
     public List<Instructor> getInstructors(){
