@@ -44,9 +44,11 @@ public class User {
     @Column(columnDefinition = "varchar(60) not null")
     private String city;
     @NotEmpty(message = "Sorry, the user gender can't be empty, please try again")
-    @Pattern(regexp = "male|female")
+    @Pattern(regexp = "male|female", message = "Sorry, the user gender must be either 'male' or 'female', please try again")
+    @Size(max = 6, message = "Sorry, the user gender can't be longer than 6 character, please try again")
+    @Column(columnDefinition = "varchar(6) not null")
     private String gender;
-    @Column(columnDefinition = "float")
+    @Column(columnDefinition = "float default 0")
     private Double balance;
     @NotNull(message = "Sorry, the user date of birth can't be empty, please try again")
     @Column(columnDefinition = "date not null")
