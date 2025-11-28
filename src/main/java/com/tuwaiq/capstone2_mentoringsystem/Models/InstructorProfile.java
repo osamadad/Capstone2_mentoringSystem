@@ -22,15 +22,11 @@ public class InstructorProfile {
     @Positive(message = "Sorry, the instructor profile age must be a positive number, please try again")
     @Column(columnDefinition = "int not null")
     private Integer age;
-    @NotEmpty(message = "Sorry, the instructor profile bio can't be empty, please try again")
-    @Size(max = 200, message = "Sorry, the instructor profile bio can't be longer than 200 characters, please try again")
-    @Column(columnDefinition = "varchar(200) not null")
-    private String bio;
-    @NotEmpty(message = "Sorry, the instructor profile phone can't be empty, please try again")
-    @Size(min = 10, max = 10, message = "Sorry, the instructor profile phone must be 10 digits, please try again")
-    @Pattern(regexp = "^05[0-9].*$", message = "Sorry, the instructor profile phone must start with 05 and contain only numbers, please try again")
+    @NotEmpty(message = "Sorry, the instructor profile phone number can't be empty, please try again")
+    @Size(min = 10, max = 10, message = "Sorry, the instructor profile phone number must be 10 digits, please try again")
+    @Pattern(regexp = "^05[0-9].*$", message = "Sorry, the instructor profile phone number must start with 05 and contain only numbers, please try again")
     @Column(columnDefinition = "varchar(10) not null")
-    private String phone;
+    private String phoneNumber;
     @NotEmpty(message = "Sorry, the instructor profile gender can't be empty, please try again")
     @Pattern(regexp = "male|female", message = "Sorry, the instructor profile gender must be either 'male' or 'female', please try again")
     @Column(columnDefinition = "varchar(10) not null")
@@ -39,7 +35,7 @@ public class InstructorProfile {
     @Size(max = 35, message = "Sorry, the category name can't be longer than 35 characters, please try again")
     @Column(columnDefinition = "varchar(35) not null")
     private String categoryName;
-    @Column(columnDefinition = "double default 0.0")
+    @Column(columnDefinition = "float default 0.0")
     private Double rating;
     @NotEmpty(message = "Sorry, the instructor profile country can't be empty, please try again")
     @Size(max = 60, message = "Sorry, the instructor profile country can't be longer than 60 characters, please try again")
