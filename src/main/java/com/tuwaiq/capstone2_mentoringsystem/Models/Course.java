@@ -28,13 +28,12 @@ public class Course {
     @Pattern(regexp = "one-to-one|group", message = "Sorry, the course type must be 'one-to-one' or 'group', please try again")
     @Column(columnDefinition = "varchar(10) not null")
     private String type;
-    @NotNull(message = "Sorry, the course capacity can't be empty, please try again")
     @Positive(message = "Sorry, the course capacity must be a positive number, please try again")
-    @Column(columnDefinition = "int not null")
+    @Column(columnDefinition = "int not null default 1")
     private Integer capacity;
     @NotNull(message = "Sorry, the course price can't be empty, please try again")
     @Positive(message = "Sorry, the course price must be a positive number, please try again")
-    @Column(columnDefinition = "double not null")
+    @Column(columnDefinition = "float not null")
     private Double price;
     @NotEmpty(message = "Sorry, the course level can't be empty, please try again")
     @Pattern(regexp = "beginner|intermediate|advanced", message = "Sorry, the course level must be 'beginner', 'intermediate', or 'advanced', please try again")
@@ -57,7 +56,7 @@ public class Course {
     @Pattern(regexp = "waiting for members|ready to start", message = "Sorry, the course group status must be 'waiting for members' or 'ready to start', please try again")
     @Column(columnDefinition = "varchar(20) not null")
     private String groupStatus;
-    @Column(columnDefinition = "double default 0.0")
+    @Column(columnDefinition = "float default 0.0")
     private Double rating;
     @Column(columnDefinition = "datetime")
     private LocalDateTime creationDate;

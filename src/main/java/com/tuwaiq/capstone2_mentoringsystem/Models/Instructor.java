@@ -52,6 +52,8 @@ public class Instructor {
     @Pattern(regexp = "male|female", message = "Sorry, the instructor gender must be either 'male' or 'female', please try again")
     @Column(columnDefinition = "varchar(10) not null")
     private String gender;
+    @Column(columnDefinition = "float default 0.0")
+    private Double rating;
     @NotNull(message = "Sorry, the instructor years of experience can't be empty, please try again")
     @Positive(message = "Sorry, the instructor years of experience must be a positive number, please try again")
     @Column(columnDefinition = "int not null")
