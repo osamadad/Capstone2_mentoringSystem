@@ -35,10 +35,13 @@ public class InstructorService {
         return instructorRepository.findAll();
     }
 
-    public Boolean updateInstructor(Integer id, Instructor instructor){
+    public String updateInstructor(Integer instructorId, Integer id, Instructor instructor){
+        if (!instructorId.equals(id)){
+            return "instructor id mismatch";
+        }
         Instructor oldInstructor = instructorRepository.findInstructorById(id);
         if (oldInstructor==null){
-            return false;
+            return "instructor id error";
         }else {
             oldInstructor.setUsername(instructor.getUsername());
             oldInstructor.setPassword(instructor.getPassword());
@@ -54,17 +57,20 @@ public class InstructorService {
             }
             oldInstructor.setCategoryId(instructor.getCategoryId());
             instructorRepository.save(oldInstructor);
-            return true;
+            return "ok";
         }
     }
 
-    public Boolean deleteInstructor(Integer id){
+    public String  deleteInstructor(Integer instructorId, Integer id){
+        if (!instructorId.equals(id)){
+            return "instructor id mismatch";
+        }
         Instructor instructor = instructorRepository.findInstructorById(id);
         if (instructor==null){
-            return false;
+            return "instructor id error";
         }else {
             instructorRepository.delete(instructor);
-            return true;
+            return "ok";
         }
     }
 

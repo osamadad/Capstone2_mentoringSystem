@@ -46,7 +46,10 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
-    public String  updateCourse( Integer id, Course course){
+    public String updateCourse(Integer instructorId, Integer id, Course course){
+        if (!instructorId.equals(id)){
+            return "instructor id mismatch";
+        }
         Course oldCourse = courseRepository.findCourseById(id);
         if (oldCourse==null){
             return "course id error";
@@ -72,13 +75,16 @@ public class CourseService {
         }
     }
 
-    public Boolean deleteCourse(Integer id){
+    public String deleteCourse(Integer instructorId, Integer id){
+        if (!instructorId.equals(id)){
+            return "course session id mismatch";
+        }
         Course course = courseRepository.findCourseById(id);
         if (course==null){
-            return false;
+            return "course id error";
         }else {
             courseRepository.delete(course);
-            return true;
+            return "ok";
         }
     }
 }

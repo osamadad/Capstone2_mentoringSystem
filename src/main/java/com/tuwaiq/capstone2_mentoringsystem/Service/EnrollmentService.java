@@ -39,13 +39,16 @@ public class EnrollmentService {
         return enrollmentRepository.findAll();
     }
 
-    public Boolean deleteEnrollment(Integer id){
+    public String deleteEnrollment(Integer userId, Integer id){
+        if (!userId.equals(id)){
+            return "user id mismatch";
+        }
         Enrollment enrollment = enrollmentRepository.findEnrollmentById(id);
         if (enrollment==null){
-            return false;
+            return "enrollment id error";
         }else {
             enrollmentRepository.delete(enrollment);
-            return true;
+            return "ok";
         }
     }
 }

@@ -30,7 +30,7 @@ public class Review {
     @NotNull(message = "Sorry, the user id can't be empty, please try again")
     @Column(columnDefinition = "int not null")
     private Integer userId;
-    @NotNull(message = "Sorry, the course id can't be empty, please try again")
+    @NotNull(message = "Sorry, the enrollment id can't be empty, please try again")
     @Column(columnDefinition = "int not null")
-    private Integer courseId;
+    private Integer EnrollmentId;
 }

@@ -29,7 +29,10 @@ public class CourseSessionService {
         return courseSessionRepository.findAll();
     }
 
-    public String updateCourseSession(Integer id, CourseSession courseSession){
+    public String updateCourseSession(Integer instructorId, Integer id, CourseSession courseSession){
+        if (!instructorId.equals(id)){
+            return "course session id mismatch";
+        }
         CourseSession oldCourseSession = courseSessionRepository.findCourseSessionById(id);
         if (oldCourseSession==null){
             return "course session id error";
@@ -47,13 +50,16 @@ public class CourseSessionService {
         }
     }
 
-    public Boolean deleteCourseSession(Integer id){
+    public String deleteCourseSession(Integer instructorId, Integer id){
+        if (!instructorId.equals(id)){
+            return "course session id mismatch";
+        }
         CourseSession courseSession = courseSessionRepository.findCourseSessionById(id);
         if (courseSession==null){
-            return false;
+            return "course session id error";
         }else {
             courseSessionRepository.delete(courseSession);
-            return true;
+            return "ok";
         }
     }
 }

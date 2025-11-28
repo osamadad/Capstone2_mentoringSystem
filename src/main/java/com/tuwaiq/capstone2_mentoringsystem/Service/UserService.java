@@ -1,8 +1,7 @@
 package com.tuwaiq.capstone2_mentoringsystem.Service;
 
-import com.tuwaiq.capstone2_mentoringsystem.Models.User;
-import com.tuwaiq.capstone2_mentoringsystem.Models.UserProfile;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.UserRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Models.*;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +15,9 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final ReviewService reviewService;
 
     public void addUser(User user){
         user.setRegistrationDate(LocalDateTime.now());
@@ -70,5 +72,21 @@ public class UserService {
         userProfile.setCity(user.getCity());
         userProfile.setUserId(user.getId());
         return userProfile;
+    }
+
+    public String reviewACourse(Integer userId, Review review){
+        if (!userId.equals(review.getUserId())){
+            return "course session id mismatch";
+        }
+        Course course=courseRepository.findCourseById(review.getCourseId());
+        List<Enrollment> enrollments= enrollmentRepository.getEnrollmentByUserIdAndCourseId(userId, review.getCourseId());
+        for (Enrollment enrollment:enrollments){
+                if (enrollment.getStatus().equalsIgnoreCase("finished")){
+
+                }
+
+        }
+        String value=reviewService.addReview(review);
+
     }
 }
