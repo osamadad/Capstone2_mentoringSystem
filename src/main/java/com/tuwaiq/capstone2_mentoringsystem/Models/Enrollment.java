@@ -16,7 +16,7 @@ public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotEmpty(message = "Sorry, the enrollment status can't be empty, please try again")
+    @Size(max = 15, message = "Sorry, the enrollment status can't be longer than 15 characters, please try again")
     @Pattern(regexp = "pending|approved|in progress|finished", message = "Sorry, the enrollment status must be 'pending', 'approved', in 'progress', or 'finished' please try again")
     @Column(columnDefinition = "varchar(15) not null default 'pending'")
     private String status;

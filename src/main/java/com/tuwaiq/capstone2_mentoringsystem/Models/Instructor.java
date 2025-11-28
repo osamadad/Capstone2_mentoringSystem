@@ -56,8 +56,8 @@ public class Instructor {
     @Positive(message = "Sorry, the instructor years of experience must be a positive number, please try again")
     @Column(columnDefinition = "int not null")
     private Integer yearsOfExperience;
-    @NotEmpty(message = "Sorry, the instructor status can't be empty, please try again")
     @Pattern(regexp = "pending|approved", message = "Sorry, the instructor status must be 'pending' or 'approved', please try again")
+    @Size(max = 10, message = "Sorry, the instructor status can't be longer than 10 characters, please try again")
     @Column(columnDefinition = "varchar(10) not null default 'pending'")
     private String status;
     @Column(columnDefinition = "datetime")
