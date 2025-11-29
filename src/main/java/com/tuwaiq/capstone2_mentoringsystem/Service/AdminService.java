@@ -1,7 +1,11 @@
 package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 import com.tuwaiq.capstone2_mentoringsystem.Models.Admin;
+import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
+import com.tuwaiq.capstone2_mentoringsystem.Models.Instructor;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.AdminRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.InstructorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,8 @@ import java.util.List;
 public class AdminService {
 
     private final AdminRepository adminRepository;
+    private final InstructorRepository instructorRepository;
+    private final CourseRepository courseRepository;
 
     public void addAdmin(Admin admin){
         admin.setRegisterDate(LocalDateTime.now());
@@ -43,5 +49,65 @@ public class AdminService {
             adminRepository.delete(admin);
             return true;
         }
+    }
+
+    public Boolean approveInstructor(Integer instructorId){
+        Instructor instructor=instructorRepository.findInstructorById(instructorId);
+        if (instructor==null){
+            return false;
+        }else {
+            instructor.setStatus("approved");
+            instructorRepository.save(instructor);
+            return true;
+        }
+    }
+
+    public Boolean approveCourse(Integer courseId){
+        Course course=courseRepository.findCourseById(courseId);
+        if (course==null){
+            return false;
+        }else {
+            course.setAdminStatus("approved");
+            courseRepository.save(course);
+            return true;
+        }
+    }
+
+    public Boolean approveAllInstructor(){
+        List<Instructor> instructors=instructorRepository.findAll();
+        if (instructors.isEmpty()){
+            return false;
+        }else {
+            for (Instructor instructor:instructors){
+                instructor.setStatus("approved");
+                instructorRepository.save(instructor);
+            }
+            return true;
+        }
+    }
+
+    public Boolean approveAllCourse(){
+        List<Course> courses=courseRepository.findAll();
+        if (courses.isEmpty()){
+            return false;
+        }else {
+            for (Course course:courses){
+                course.setAdminStatus("approved");
+                courseRepository.save(course);
+            }
+            return true;
+        }
+    }
+
+    public List<Instructor> getUnapproveInstructors() {
+        return instructorRepository.findInstructorsByStatus("pending");
+    }
+
+    public List<Instructor> getAllInstructors() {
+        return instructorRepository.findAll();
+    }
+
+    public List<Course> getUnapproveCourses() {
+        return courseRepository.getUnapprovedCourses();
     }
 }

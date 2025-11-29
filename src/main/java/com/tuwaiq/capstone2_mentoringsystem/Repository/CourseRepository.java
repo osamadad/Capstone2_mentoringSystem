@@ -12,6 +12,9 @@ public interface CourseRepository extends JpaRepository<Course,Integer> {
 
     Course findCourseById(Integer id);
 
+    @Query("select courses from Course courses where courses.adminStatus='pending'")
+    List<Course> getUnapprovedCourses();
+
     List<Course> findCoursesByInstructorId(Integer instructorId);
 
     @Query("select avg (course.rating) from Course course where course.instructorId=?1")
