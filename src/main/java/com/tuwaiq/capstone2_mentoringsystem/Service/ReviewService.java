@@ -1,13 +1,14 @@
 package com.tuwaiq.capstone2_mentoringsystem.Service;
 
-import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
+import com.tuwaiq.capstone2_mentoringsystem.Models.Enrollment;
 import com.tuwaiq.capstone2_mentoringsystem.Models.Review;
 import com.tuwaiq.capstone2_mentoringsystem.Models.User;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.EnrollmentRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.ReviewRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,55 +16,74 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final ReviewRepository reviewsRepository;
+    private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final CourseService courseService;
 
-    public String addReview(Review reviews){
-        User user = userRepository.findUserById(reviews.getUserId());
-        if (user==null){
+    public String addReview(Integer userId, Review review) {
+        User user = userRepository.findUserById(review.getUserId());
+        if (user == null) {
             return "user id error";
         }
-        Course course = courseRepository.findCourseById(reviews.getCourseId());
-        if (course==null){
-            return "course id error";
+        if (!userId.equals(user.getId())) {
+            return "user id id mismatch";
         }
-        reviews.setReviewDate(LocalDateTime.now());
-        reviewsRepository.save(reviews);
-        return "ok";
-    }
-
-    public List<Review> getReviews(){
-        return reviewsRepository.findAll();
-    }
-
-    public String updateReview(Integer id, Review review){
-        Review oldReviews = reviewsRepository.findReviewById(id);
-        if (oldReviews==null){
-            return "review id error";
-        }else {
-            if (!oldReviews.getUserId().equals(review.getUserId())){
-                return "user id error";
-            }
-            if (!oldReviews.getCourseId().equals(review.getCourseId())){
-                return "course id error";
-            }
-            oldReviews.setRating(review.getRating());
-            oldReviews.setContent(review.getContent());
-            oldReviews.setUserId(review.getUserId());
-            oldReviews.setCourseId(review.getCourseId());
-            reviewsRepository.save(oldReviews);
+        Enrollment enrollment = enrollmentRepository.findEnrollmentById(review.getEnrollmentId());
+        if (enrollment == null) {
+            return "enrollment id error";
+        }
+        if (!enrollment.getStatus().equalsIgnoreCase("finished")) {
+            return "enrollment status error";
+        }
+        Review existingReview = reviewRepository.getReviewByUserIdAndEnrollmentId(userId, enrollment.getId());
+        if (existingReview != null) {
+            return "review exist";
+        } else {
+            review.setReviewDate(LocalDateTime.now());
+            reviewRepository.save(review);
+            courseService.reCalculateCourseRating(enrollment.getCourseId());
             return "ok";
         }
     }
 
-    public Boolean deleteReview(Integer id){
-        Review review = reviewsRepository.findReviewById(id);
-        if (review ==null){
-            return false;
-        }else {
-            reviewsRepository.delete(review);
-            return true;
+    public List<Review> getReviews() {
+        return reviewRepository.findAll();
+    }
+
+    public String updateReview(Integer userId, Integer id, Review review) {
+        Review oldReviews = reviewRepository.findReviewById(id);
+        if (oldReviews == null) {
+            return "review id error";
+        }
+        if (!userId.equals(oldReviews.getUserId())) {
+            return "user id mismatch";
+        } else {
+            if (!oldReviews.getUserId().equals(review.getUserId())) {
+                return "user id error";
+            }
+            if (!oldReviews.getEnrollmentId().equals(review.getEnrollmentId())) {
+                return "enrollment id error";
+            }
+            oldReviews.setRating(review.getRating());
+            oldReviews.setContent(review.getContent());
+            oldReviews.setUserId(review.getUserId());
+            oldReviews.setEnrollmentId(review.getEnrollmentId());
+            reviewRepository.save(oldReviews);
+            return "ok";
+        }
+    }
+
+    public String deleteReview(Integer userId, Integer id) {
+        Review review = reviewRepository.findReviewById(id);
+        if (review == null) {
+            return "review id error";
+        }
+        if (!userId.equals(review.getUserId())) {
+            return "user id mismatch";
+        } else {
+            reviewRepository.delete(review);
+            return "ok";
         }
     }
 }

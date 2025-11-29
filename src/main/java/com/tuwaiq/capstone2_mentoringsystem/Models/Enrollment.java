@@ -28,4 +28,7 @@ public class Enrollment {
     @NotNull(message = "Sorry, the course id can't be empty, please try again")
     @Column(columnDefinition = "int not null")
     private Integer courseId;
+    @NotNull(message = "Sorry, the course session id can't be empty, please try again")
+    @Column(columnDefinition = "int not null")
+    private Integer courseSessionId;
 }

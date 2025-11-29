@@ -1,8 +1,7 @@
 package com.tuwaiq.capstone2_mentoringsystem.Service;
 
-import com.tuwaiq.capstone2_mentoringsystem.Models.User;
-import com.tuwaiq.capstone2_mentoringsystem.Models.UserProfile;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.UserRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Models.*;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,21 +15,24 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final ReviewService reviewService;
 
-    public void addUser(User user){
+    public void addUser(User user) {
         user.setRegistrationDate(LocalDateTime.now());
         userRepository.save(user);
     }
 
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public Boolean updateUser(Integer id, User user){
-        User oldUser= userRepository.findUserById(id);
-        if (oldUser==null){
+    public Boolean updateUser(Integer id, User user) {
+        User oldUser = userRepository.findUserById(id);
+        if (oldUser == null) {
             return false;
-        }else {
+        } else {
             oldUser.setUsername(user.getUsername());
             oldUser.setPassword(user.getPassword());
             oldUser.setEmail(user.getEmail());
@@ -45,25 +47,25 @@ public class UserService {
         }
     }
 
-    public Boolean deleteUser(Integer id){
-        User user= userRepository.findUserById(id);
-        if (user==null){
+    public Boolean deleteUser(Integer id) {
+        User user = userRepository.findUserById(id);
+        if (user == null) {
             return false;
-        }else {
+        } else {
             userRepository.delete(user);
             return true;
         }
     }
 
-    public UserProfile getUserInfo(Integer userId){
-        User user=userRepository.findUserById(userId);
-        if (user==null){
+    public UserProfile getUserInfo(Integer userId) {
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
             return null;
         }
-        UserProfile userProfile=new UserProfile();
+        UserProfile userProfile = new UserProfile();
         userProfile.setUsername(user.getUsername());
         userProfile.setPhone(userProfile.getPhone());
-        Integer age = Period.between(user.getDateOfBirth(),LocalDate.now()).getYears();
+        Integer age = Period.between(user.getDateOfBirth(), LocalDate.now()).getYears();
         userProfile.setAge(age);
         userProfile.setGender(user.getGender());
         userProfile.setCountry(userProfile.getCountry());

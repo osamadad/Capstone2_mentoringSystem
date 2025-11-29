@@ -16,30 +16,43 @@ public class CourseSessionService {
     private final CourseSessionRepository courseSessionRepository;
     private final CourseRepository courseRepository;
 
-    public String addCourseSession(CourseSession courseSession){
+    public String addCourseSession(Integer instructorId, CourseSession courseSession) {
         Course course = courseRepository.findCourseById(courseSession.getCourseId());
-        if (course==null){
+        if (course == null) {
             return "course id error";
         }
-        courseSessionRepository.save(courseSession);
-        return "ok";
+        if (!course.getInstructorId().equals(instructorId)) {
+            return "instructor id mismatch";
+        } else {
+            courseSession.setOccupied(false);
+            courseSessionRepository.save(courseSession);
+            return "ok";
+        }
     }
 
-    public List<CourseSession> getCourseSessions(){
+    public List<CourseSession> getCourseSessions() {
         return courseSessionRepository.findAll();
     }
 
-    public String updateCourseSession(Integer id, CourseSession courseSession){
+    public String updateCourseSession(Integer instructorId, Integer id, CourseSession courseSession) {
+        Integer instructorId2=getCourseInstructorId(courseSession);
+        if (instructorId2==null){
+            return "course id error";
+        }
+        if (!instructorId.equals(instructorId2)) {
+            return "instructor id mismatch";
+        }
         CourseSession oldCourseSession = courseSessionRepository.findCourseSessionById(id);
-        if (oldCourseSession==null){
+        if (oldCourseSession == null) {
             return "course session id error";
-        }else {
+        } else {
             oldCourseSession.setStartDate(courseSession.getStartDate());
             oldCourseSession.setEndDate(courseSession.getEndDate());
             oldCourseSession.setStartTime(courseSession.getStartTime());
             oldCourseSession.setEndTime(courseSession.getEndTime());
-            if (!oldCourseSession.getCourseId().equals(courseSession.getCourseId())){
-                return "course id error";
+            oldCourseSession.setOccupied(courseSession.getOccupied());
+            if (!oldCourseSession.getCourseId().equals(courseSession.getCourseId())) {
+                return "course id mismatch";
             }
             oldCourseSession.setCourseId(courseSession.getCourseId());
             courseSessionRepository.save(oldCourseSession);
@@ -47,13 +60,29 @@ public class CourseSessionService {
         }
     }
 
-    public Boolean deleteCourseSession(Integer id){
+    public String deleteCourseSession(Integer instructorId, Integer id) {
         CourseSession courseSession = courseSessionRepository.findCourseSessionById(id);
-        if (courseSession==null){
-            return false;
+        if (courseSession == null) {
+            return "course session id error";
+        }
+        Integer instructorId2=getCourseInstructorId(courseSession);
+        if (instructorId2==null){
+            return "course id error";
+        }
+        if (!instructorId.equals(id)) {
+            return "course session id mismatch";
         }else {
             courseSessionRepository.delete(courseSession);
-            return true;
+            return "ok";
+        }
+    }
+
+    public Integer getCourseInstructorId(CourseSession courseSession) {
+        Course course = courseRepository.findCourseById(courseSession.getCourseId());
+        if (course == null) {
+            return null;
+        } else {
+            return course.getInstructorId();
         }
     }
 }

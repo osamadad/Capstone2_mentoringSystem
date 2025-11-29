@@ -2,9 +2,11 @@ package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 
 import com.tuwaiq.capstone2_mentoringsystem.Models.Category;
+import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
 import com.tuwaiq.capstone2_mentoringsystem.Models.Instructor;
 import com.tuwaiq.capstone2_mentoringsystem.Models.InstructorProfile;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.CategoryRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.InstructorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,26 +21,31 @@ public class InstructorService {
 
     private final InstructorRepository instructorRepository;
     private final CategoryRepository categoryRepository;
+    private final CourseRepository courseRepository;
 
-    public String addInstructor(Instructor instructor){
+    public Boolean addInstructor(Instructor instructor){
         Category category = categoryRepository.findCategoryById(instructor.getCategoryId());
         if (category==null){
-            return "category id error";
+            return false;
+        }else {
+            instructor.setStatus("pending");
+            instructor.setRating(0.0);
+            instructorRepository.save(instructor);
+            return true;
         }
-        instructor.setStatus("pending");
-        instructor.setRating(0.0);
-        instructorRepository.save(instructor);
-        return "ok";
     }
 
     public List<Instructor> getInstructors(){
         return instructorRepository.findAll();
     }
 
-    public Boolean updateInstructor(Integer id, Instructor instructor){
+    public String updateInstructor(Integer instructorId, Integer id, Instructor instructor){
+        if (!instructorId.equals(id)){
+            return "instructor id mismatch";
+        }
         Instructor oldInstructor = instructorRepository.findInstructorById(id);
         if (oldInstructor==null){
-            return false;
+            return "instructor id error";
         }else {
             oldInstructor.setUsername(instructor.getUsername());
             oldInstructor.setPassword(instructor.getPassword());
@@ -54,17 +61,20 @@ public class InstructorService {
             }
             oldInstructor.setCategoryId(instructor.getCategoryId());
             instructorRepository.save(oldInstructor);
-            return true;
+            return "ok";
         }
     }
 
-    public Boolean deleteInstructor(Integer id){
+    public String  deleteInstructor(Integer instructorId, Integer id){
+        if (!instructorId.equals(id)){
+            return "instructor id mismatch";
+        }
         Instructor instructor = instructorRepository.findInstructorById(id);
         if (instructor==null){
-            return false;
+            return "instructor id error";
         }else {
             instructorRepository.delete(instructor);
-            return true;
+            return "ok";
         }
     }
 
@@ -87,5 +97,11 @@ public class InstructorService {
         instructorProfile.setYearsOfExperience(instructor.getYearsOfExperience());
         instructorProfile.setInstructorId(instructorProfile.getInstructorId());
         return instructorProfile;
+    }
+
+    public void reCalculateInstructorRating(Integer instructorId){
+        Instructor instructor = instructorRepository.findInstructorById(instructorId);
+        instructor.setRating(courseRepository.getAvgCoursesRatingByInstructorId(instructorId));
+        instructorRepository.save(instructor);
     }
 }
