@@ -20,6 +20,7 @@ public class UserService {
     private final ReviewService reviewService;
 
     public void addUser(User user) {
+        user.setBalance(0.0);
         user.setRegistrationDate(LocalDateTime.now());
         userRepository.save(user);
     }

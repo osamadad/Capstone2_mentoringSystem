@@ -55,12 +55,12 @@ public class CourseService {
     }
 
     public String updateCourse(Integer instructorId, Integer id, Course course) {
-        if (!instructorId.equals(course.getInstructorId())) {
-            return "instructor id mismatch";
-        }
         Course oldCourse = courseRepository.findCourseById(id);
         if (oldCourse == null) {
             return "course id error";
+        }
+        if (!instructorId.equals(oldCourse.getInstructorId())) {
+            return "instructor id mismatch";
         } else {
             oldCourse.setTitle(course.getTitle());
             oldCourse.setDescription(course.getDescription());
@@ -69,8 +69,7 @@ public class CourseService {
             oldCourse.setPrice(course.getPrice());
             oldCourse.setLevel(course.getLevel());
             oldCourse.setLocation(course.getLocation());
-            oldCourse.setTime(course.getTime());
-            if (oldCourse.getInstructorId().equals(course.getInstructorId())) {
+            if (!oldCourse.getInstructorId().equals(course.getInstructorId())) {
                 return "instructor id error";
             }
             oldCourse.setInstructorId(course.getInstructorId());
@@ -89,7 +88,7 @@ public class CourseService {
             return "course id error";
         }
         if (!instructorId.equals(course.getInstructorId())) {
-            return "course session id mismatch";
+            return "instructor id mismatch";
         } else {
             courseRepository.delete(course);
             return "ok";

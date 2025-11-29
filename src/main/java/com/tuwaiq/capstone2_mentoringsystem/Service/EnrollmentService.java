@@ -23,12 +23,15 @@ public class EnrollmentService {
     private final CourseRepository courseRepository;
     private final CourseSessionRepository courseSessionRepository;
 
-    public String addEnrollment(Enrollment enrollment) {
+    public String addEnrollment(Integer userId, Enrollment enrollment) {
         User user = userRepository.findUserById(enrollment.getUserId());
         Course course = courseRepository.findCourseById(enrollment.getCourseId());
         CourseSession courseSession = courseSessionRepository.findCourseSessionById(enrollment.getCourseSessionId());
         if (user == null) {
             return "user id error";
+        }
+        if (!userId.equals(user.getId())){
+            return "user id mismatch";
         }
         if (course == null) {
             return "course id error";

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 
@@ -23,30 +24,31 @@ public class InstructorService {
     private final CategoryRepository categoryRepository;
     private final CourseRepository courseRepository;
 
-    public Boolean addInstructor(Instructor instructor){
+    public Boolean addInstructor(Instructor instructor) {
         Category category = categoryRepository.findCategoryById(instructor.getCategoryId());
-        if (category==null){
+        if (category == null) {
             return false;
-        }else {
+        } else {
             instructor.setStatus("pending");
             instructor.setRating(0.0);
+            instructor.setRegisterDate(LocalDateTime.now());
             instructorRepository.save(instructor);
             return true;
         }
     }
 
-    public List<Instructor> getInstructors(){
+    public List<Instructor> getInstructors() {
         return instructorRepository.findAll();
     }
 
-    public String updateInstructor(Integer instructorId, Integer id, Instructor instructor){
-        if (!instructorId.equals(id)){
-            return "instructor id mismatch";
-        }
+    public String updateInstructor(Integer instructorId, Integer id, Instructor instructor) {
         Instructor oldInstructor = instructorRepository.findInstructorById(id);
-        if (oldInstructor==null){
+        if (oldInstructor == null) {
             return "instructor id error";
-        }else {
+        }
+        if (!instructorId.equals(oldInstructor.getId())) {
+            return "instructor id mismatch";
+        } else {
             oldInstructor.setUsername(instructor.getUsername());
             oldInstructor.setPassword(instructor.getPassword());
             oldInstructor.setEmail(instructor.getEmail());
@@ -56,7 +58,7 @@ public class InstructorService {
             oldInstructor.setDateOfBirth(instructor.getDateOfBirth());
             oldInstructor.setGender(instructor.getGender());
             oldInstructor.setYearsOfExperience(instructor.getYearsOfExperience());
-            if (!oldInstructor.getCategoryId().equals(instructor.getCategoryId())){
+            if (!oldInstructor.getCategoryId().equals(instructor.getCategoryId())) {
                 oldInstructor.setStatus("pending");
             }
             oldInstructor.setCategoryId(instructor.getCategoryId());
@@ -65,26 +67,26 @@ public class InstructorService {
         }
     }
 
-    public String  deleteInstructor(Integer instructorId, Integer id){
-        if (!instructorId.equals(id)){
+    public String deleteInstructor(Integer instructorId, Integer id) {
+        if (!instructorId.equals(id)) {
             return "instructor id mismatch";
         }
         Instructor instructor = instructorRepository.findInstructorById(id);
-        if (instructor==null){
+        if (instructor == null) {
             return "instructor id error";
-        }else {
+        } else {
             instructorRepository.delete(instructor);
             return "ok";
         }
     }
 
-    public InstructorProfile getInstructorInfo(Integer id){
-        Instructor instructor=instructorRepository.findInstructorById(id);
-        if (instructor==null){
+    public InstructorProfile getInstructorInfo(Integer id) {
+        Instructor instructor = instructorRepository.findInstructorById(id);
+        if (instructor == null) {
             return null;
         }
-        Category category= categoryRepository.findCategoryById(instructor.getCategoryId());
-        InstructorProfile instructorProfile=new InstructorProfile();
+        Category category = categoryRepository.findCategoryById(instructor.getCategoryId());
+        InstructorProfile instructorProfile = new InstructorProfile();
         instructorProfile.setUsername(instructor.getUsername());
         Integer age = Period.between(instructor.getDateOfBirth(), LocalDate.now()).getYears();
         instructorProfile.setAge(age);
@@ -99,7 +101,7 @@ public class InstructorService {
         return instructorProfile;
     }
 
-    public void reCalculateInstructorRating(Integer instructorId){
+    public void reCalculateInstructorRating(Integer instructorId) {
         Instructor instructor = instructorRepository.findInstructorById(instructorId);
         instructor.setRating(courseRepository.getAvgCoursesRatingByInstructorId(instructorId));
         instructorRepository.save(instructor);

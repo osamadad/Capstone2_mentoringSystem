@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +44,6 @@ public class Course {
     @Size(max = 100, message = "Sorry, the course location can't be longer than 100 characters, please try again")
     @Column(columnDefinition = "varchar(100) not null")
     private String location;
-    @NotEmpty(message = "Sorry, the course time can't be empty, please try again")
-    @Size(max = 50, message = "Sorry, the course time can't be longer than 50 characters, please try again")
-    @Column(columnDefinition = "varchar(50) not null")
-    private String time;
     @Size(max = 10, message = "Sorry, the course admin status can't be longer than 10 characters, please try again")
     @Pattern(regexp = "pending|approved", message = "Sorry, the course admin status must be 'pending' or 'approved', please try again")
     @Column(columnDefinition = "varchar(10) not null default 'pending'")

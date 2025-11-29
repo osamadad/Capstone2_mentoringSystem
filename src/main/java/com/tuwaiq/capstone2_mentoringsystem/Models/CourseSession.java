@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class CourseSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class CourseSession {
     @Column(columnDefinition = "time not null")
     private LocalTime endTime;
     @AssertFalse(message = "Sorry, the session occupation can't be true, please try again")
-    @Column(columnDefinition = "boolean default 'false'")
+    @Column(columnDefinition = "boolean default false")
     private Boolean occupied;
     @NotNull(message = "Sorry, the course id can't be empty, please try again")
     @Column(columnDefinition = "int not null")
