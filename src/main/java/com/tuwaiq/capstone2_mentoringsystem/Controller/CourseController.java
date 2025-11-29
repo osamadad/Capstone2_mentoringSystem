@@ -18,17 +18,21 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addCourse(@RequestBody @Valid Course course, Errors errors){
+    @PostMapping("/add/{instructorId}")
+    public ResponseEntity<?> addCourse(@PathVariable Integer instructorId, @RequestBody @Valid Course course, Errors errors){
         if (errors.hasErrors()){
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
         }else {
-            String value= courseService.addCourse(course);
+            String value= courseService.addCourse(instructorId,course);
             switch (value){
                 case "ok":
                     return ResponseEntity.status(200).body(new ApiResponse("The course have been added successfully, pleas wait for our admins to approve of you"));
+                case "instructor id mismatch":
+                    return ResponseEntity.status(400).body(new ApiResponse("You can't add a course with an id that is not yours"));
                 case "instructor id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no instructors with this id found"));
+                case "instructor status error":
+                    return ResponseEntity.status(400).body(new ApiResponse("You are still not approved by our admins, please wait for approval"));
                 case "category id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no categories with this id found"));
                 default:
@@ -61,7 +65,7 @@ public class CourseController {
                 case "instructor id mismatch":
                     return ResponseEntity.status(400).body(new ApiResponse("You can't update a course that is not yours"));
                 case "instructor id error":
-                    return ResponseEntity.status(400).body(new ApiResponse("You can't change the instructor of the course"));
+                    return ResponseEntity.status(400).body(new ApiResponse("You can't change the instructor of the course to someone that is not you"));
                 case "category id error":
                     return ResponseEntity.status(400).body(new ApiResponse("You can't change the category of the course"));
                 default:

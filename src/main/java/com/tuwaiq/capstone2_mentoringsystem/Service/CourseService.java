@@ -23,11 +23,17 @@ public class CourseService {
     private final CategoryRepository categoryRepository;
     private final InstructorService instructorService;
 
-    public String addCourse(Course course){
+    public String addCourse(Integer instructorId,Course course){
         Instructor instructor = instructorRepository.findInstructorById(course.getInstructorId());
         Category category = categoryRepository.findCategoryById(course.getCategoryId());
         if (instructor==null){
             return "instructor id error";
+        }
+        if (!instructorId.equals(instructor.getId())){
+            return "instructor id mismatch";
+        }
+        if (instructor.getStatus().equalsIgnoreCase("pending")){
+            return "instructor status error";
         }
         if (category==null){
             return "category id error";
@@ -49,7 +55,7 @@ public class CourseService {
     }
 
     public String updateCourse(Integer instructorId, Integer id, Course course){
-        if (!instructorId.equals(id)){
+        if (!instructorId.equals(course.getInstructorId())){
             return "instructor id mismatch";
         }
         Course oldCourse = courseRepository.findCourseById(id);

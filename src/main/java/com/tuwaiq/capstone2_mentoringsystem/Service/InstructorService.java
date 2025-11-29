@@ -2,6 +2,7 @@ package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 
 import com.tuwaiq.capstone2_mentoringsystem.Models.Category;
+import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
 import com.tuwaiq.capstone2_mentoringsystem.Models.Instructor;
 import com.tuwaiq.capstone2_mentoringsystem.Models.InstructorProfile;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.CategoryRepository;
@@ -21,16 +22,18 @@ public class InstructorService {
     private final InstructorRepository instructorRepository;
     private final CategoryRepository categoryRepository;
     private final CourseRepository courseRepository;
+    private final CourseService courseService;
 
     public Boolean addInstructor(Instructor instructor){
         Category category = categoryRepository.findCategoryById(instructor.getCategoryId());
         if (category==null){
             return false;
+        }else {
+            instructor.setStatus("pending");
+            instructor.setRating(0.0);
+            instructorRepository.save(instructor);
+            return true;
         }
-        instructor.setStatus("pending");
-        instructor.setRating(0.0);
-        instructorRepository.save(instructor);
-        return true;
     }
 
     public List<Instructor> getInstructors(){
