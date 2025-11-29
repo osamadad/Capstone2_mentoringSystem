@@ -1,12 +1,10 @@
 package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 
-import com.tuwaiq.capstone2_mentoringsystem.Models.Category;
-import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
-import com.tuwaiq.capstone2_mentoringsystem.Models.Instructor;
-import com.tuwaiq.capstone2_mentoringsystem.Models.InstructorProfile;
+import com.tuwaiq.capstone2_mentoringsystem.Models.*;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.CategoryRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.EnrollmentRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.InstructorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ import java.util.List;
 public class InstructorService {
 
     private final InstructorRepository instructorRepository;
+    private final EnrollmentRepository enrollmentRepository;
     private final CategoryRepository categoryRepository;
     private final CourseRepository courseRepository;
 
@@ -105,5 +104,18 @@ public class InstructorService {
         Instructor instructor = instructorRepository.findInstructorById(instructorId);
         instructor.setRating(courseRepository.getAvgCoursesRatingByInstructorId(instructorId));
         instructorRepository.save(instructor);
+    }
+
+    public Boolean approveAllEnrollment(){
+        List<Enrollment> enrollments=enrollmentRepository.findAll();
+        if (enrollments.isEmpty()){
+            return false;
+        }else {
+            for (Enrollment enrollment:enrollments){
+                enrollment.setStatus("approved");
+                enrollmentRepository.save(enrollment);
+            }
+            return true;
+        }
     }
 }

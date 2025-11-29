@@ -77,4 +77,13 @@ public class InstructorController {
                 return ResponseEntity.status(400).body(new ApiResponse("General error"));
         }
     }
+
+    @PutMapping("/approve-all-enrollment")
+    public ResponseEntity<?> approveAllEnrollment() {
+        if (instructorService.approveAllEnrollment()) {
+            return ResponseEntity.status(200).body(new ApiResponse("All enrollment have been approved successfully"));
+        } else {
+            return ResponseEntity.status(400).body(new ApiResponse("There are no enrollment to approve"));
+        }
+    }
 }
