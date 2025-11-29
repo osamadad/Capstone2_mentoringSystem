@@ -1,7 +1,6 @@
 package com.tuwaiq.capstone2_mentoringsystem.Repository;
 
 import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

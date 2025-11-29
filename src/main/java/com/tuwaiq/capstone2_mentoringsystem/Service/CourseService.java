@@ -23,22 +23,22 @@ public class CourseService {
     private final CategoryRepository categoryRepository;
     private final InstructorService instructorService;
 
-    public String addCourse(Integer instructorId,Course course){
+    public String addCourse(Integer instructorId, Course course) {
         Instructor instructor = instructorRepository.findInstructorById(course.getInstructorId());
         Category category = categoryRepository.findCategoryById(course.getCategoryId());
-        if (instructor==null){
+        if (instructor == null) {
             return "instructor id error";
         }
-        if (!instructorId.equals(instructor.getId())){
+        if (!instructorId.equals(instructor.getId())) {
             return "instructor id mismatch";
         }
-        if (instructor.getStatus().equalsIgnoreCase("pending")){
+        if (instructor.getStatus().equalsIgnoreCase("pending")) {
             return "instructor status error";
         }
-        if (category==null){
+        if (category == null) {
             return "category id error";
         }
-        if (course.getType().equalsIgnoreCase("one-to-one")){
+        if (course.getType().equalsIgnoreCase("one-to-one")) {
             course.setCapacity(1);
             course.setGroupStatus("ready to start");
         }
@@ -50,18 +50,18 @@ public class CourseService {
         return "ok";
     }
 
-    public List<Course> getCourses(){
+    public List<Course> getCourses() {
         return courseRepository.findAll();
     }
 
-    public String updateCourse(Integer instructorId, Integer id, Course course){
-        if (!instructorId.equals(course.getInstructorId())){
+    public String updateCourse(Integer instructorId, Integer id, Course course) {
+        if (!instructorId.equals(course.getInstructorId())) {
             return "instructor id mismatch";
         }
         Course oldCourse = courseRepository.findCourseById(id);
-        if (oldCourse==null){
+        if (oldCourse == null) {
             return "course id error";
-        }else {
+        } else {
             oldCourse.setTitle(course.getTitle());
             oldCourse.setDescription(course.getDescription());
             oldCourse.setType(course.getType());
@@ -70,11 +70,11 @@ public class CourseService {
             oldCourse.setLevel(course.getLevel());
             oldCourse.setLocation(course.getLocation());
             oldCourse.setTime(course.getTime());
-            if (oldCourse.getInstructorId().equals(course.getInstructorId())){
+            if (oldCourse.getInstructorId().equals(course.getInstructorId())) {
                 return "instructor id error";
             }
             oldCourse.setInstructorId(course.getInstructorId());
-            if (!oldCourse.getCategoryId().equals(course.getCategoryId())){
+            if (!oldCourse.getCategoryId().equals(course.getCategoryId())) {
                 return "category id error";
             }
             oldCourse.setCategoryId(course.getCategoryId());
@@ -83,22 +83,22 @@ public class CourseService {
         }
     }
 
-    public String deleteCourse(Integer instructorId, Integer id){
-        if (!instructorId.equals(id)){
-            return "course session id mismatch";
-        }
+    public String deleteCourse(Integer instructorId, Integer id) {
         Course course = courseRepository.findCourseById(id);
-        if (course==null){
+        if (course == null) {
             return "course id error";
-        }else {
+        }
+        if (!instructorId.equals(course.getInstructorId())) {
+            return "course session id mismatch";
+        } else {
             courseRepository.delete(course);
             return "ok";
         }
     }
 
-    public void reCalculateCourseRating(Integer courseId){
-        Course course=courseRepository.findCourseById(courseId);
-        List<Enrollment> enrollments=enrollmentRepository.findEnrollmentsByCourseId(courseId);
+    public void reCalculateCourseRating(Integer courseId) {
+        Course course = courseRepository.findCourseById(courseId);
+        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsByCourseId(courseId);
         course.setRating(reviewRepository.getAvgReviewRatingByEnrollments(enrollments));
         instructorService.reCalculateInstructorRating(course.getInstructorId());
     }

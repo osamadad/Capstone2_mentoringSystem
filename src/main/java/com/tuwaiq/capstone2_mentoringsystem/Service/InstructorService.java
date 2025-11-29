@@ -22,7 +22,6 @@ public class InstructorService {
     private final InstructorRepository instructorRepository;
     private final CategoryRepository categoryRepository;
     private final CourseRepository courseRepository;
-    private final CourseService courseService;
 
     public Boolean addInstructor(Instructor instructor){
         Category category = categoryRepository.findCategoryById(instructor.getCategoryId());

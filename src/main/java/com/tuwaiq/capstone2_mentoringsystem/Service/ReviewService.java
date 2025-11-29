@@ -8,6 +8,7 @@ import com.tuwaiq.capstone2_mentoringsystem.Repository.ReviewRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,25 +21,25 @@ public class ReviewService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseService courseService;
 
-    public String addReview(Integer userId, Review review){
+    public String addReview(Integer userId, Review review) {
         User user = userRepository.findUserById(review.getUserId());
-        if (user==null){
+        if (user == null) {
             return "user id error";
         }
         if (!userId.equals(user.getId())) {
             return "user id id mismatch";
         }
         Enrollment enrollment = enrollmentRepository.findEnrollmentById(review.getEnrollmentId());
-        if (enrollment==null){
+        if (enrollment == null) {
             return "enrollment id error";
         }
         if (!enrollment.getStatus().equalsIgnoreCase("finished")) {
             return "enrollment status error";
         }
-        Review existingReview=reviewRepository.getReviewByUserIdAndEnrollmentId(userId,enrollment.getId());
-        if (existingReview!=null){
+        Review existingReview = reviewRepository.getReviewByUserIdAndEnrollmentId(userId, enrollment.getId());
+        if (existingReview != null) {
             return "review exist";
-        }else {
+        } else {
             review.setReviewDate(LocalDateTime.now());
             reviewRepository.save(review);
             courseService.reCalculateCourseRating(enrollment.getCourseId());
@@ -46,22 +47,22 @@ public class ReviewService {
         }
     }
 
-    public List<Review> getReviews(){
+    public List<Review> getReviews() {
         return reviewRepository.findAll();
     }
 
-    public String updateReview(Integer userId, Integer id, Review review){
-        if (!userId.equals(id)){
-            return "user id mismatch";
-        }
+    public String updateReview(Integer userId, Integer id, Review review) {
         Review oldReviews = reviewRepository.findReviewById(id);
-        if (oldReviews==null){
+        if (oldReviews == null) {
             return "review id error";
-        }else {
-            if (!oldReviews.getUserId().equals(review.getUserId())){
+        }
+        if (!userId.equals(oldReviews.getUserId())) {
+            return "user id mismatch";
+        } else {
+            if (!oldReviews.getUserId().equals(review.getUserId())) {
                 return "user id error";
             }
-            if (!oldReviews.getEnrollmentId().equals(review.getEnrollmentId())){
+            if (!oldReviews.getEnrollmentId().equals(review.getEnrollmentId())) {
                 return "enrollment id error";
             }
             oldReviews.setRating(review.getRating());
@@ -73,14 +74,14 @@ public class ReviewService {
         }
     }
 
-    public String deleteReview(Integer userId,Integer id){
-        if (!userId.equals(id)){
-            return "user id mismatch";
-        }
+    public String deleteReview(Integer userId, Integer id) {
         Review review = reviewRepository.findReviewById(id);
-        if (review ==null){
+        if (review == null) {
             return "review id error";
-        }else {
+        }
+        if (!userId.equals(review.getUserId())) {
+            return "user id mismatch";
+        } else {
             reviewRepository.delete(review);
             return "ok";
         }

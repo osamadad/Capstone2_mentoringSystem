@@ -23,17 +23,17 @@ public class EnrollmentService {
     private final CourseRepository courseRepository;
     private final CourseSessionRepository courseSessionRepository;
 
-    public String addEnrollment(Enrollment enrollment){
+    public String addEnrollment(Enrollment enrollment) {
         User user = userRepository.findUserById(enrollment.getUserId());
         Course course = courseRepository.findCourseById(enrollment.getCourseId());
-        CourseSession courseSession= courseSessionRepository.findCourseSessionById(enrollment.getCourseSessionId());
-        if (user==null){
+        CourseSession courseSession = courseSessionRepository.findCourseSessionById(enrollment.getCourseSessionId());
+        if (user == null) {
             return "user id error";
         }
-        if (course==null){
+        if (course == null) {
             return "course id error";
         }
-        if (courseSession==null){
+        if (courseSession == null) {
             return "course session id error";
         }
         enrollment.setStatus("pending");
@@ -42,18 +42,18 @@ public class EnrollmentService {
         return "ok";
     }
 
-    public List<Enrollment> getEnrollments(){
+    public List<Enrollment> getEnrollments() {
         return enrollmentRepository.findAll();
     }
 
-    public String deleteEnrollment(Integer userId, Integer id){
-        if (!userId.equals(id)){
-            return "user id mismatch";
-        }
+    public String deleteEnrollment(Integer userId, Integer id) {
         Enrollment enrollment = enrollmentRepository.findEnrollmentById(id);
-        if (enrollment==null){
+        if (enrollment == null) {
             return "enrollment id error";
-        }else {
+        }
+        if (!userId.equals(enrollment.getUserId())) {
+            return "user id mismatch";
+        } else {
             enrollmentRepository.delete(enrollment);
             return "ok";
         }
