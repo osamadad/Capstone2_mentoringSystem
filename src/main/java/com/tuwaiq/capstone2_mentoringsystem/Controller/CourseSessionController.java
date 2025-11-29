@@ -54,6 +54,8 @@ public class CourseSessionController {
                     return ResponseEntity.status(400).body(new ApiResponse("There are no course sessions with this id found"));
                 case "instructor id mismatch":
                     return ResponseEntity.status(400).body(new ApiResponse("You can't update a course session that is not yours"));
+                case "course id error":
+                    return ResponseEntity.status(400).body(new ApiResponse("You can't change the course id to new course"));
                 default:
                     return ResponseEntity.status(400).body(new ApiResponse("General error"));
             }
