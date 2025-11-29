@@ -33,13 +33,20 @@ public class EnrollmentService {
         if (course == null) {
             return "course id error";
         }
+        if (course.getAdminStatus().equalsIgnoreCase("pending")){
+            return "course status error";
+        }
         if (courseSession == null) {
             return "course session id error";
         }
-        enrollment.setStatus("pending");
-        enrollment.setEnrollmentDate(LocalDateTime.now());
-        enrollmentRepository.save(enrollment);
-        return "ok";
+        if (courseSession.getOccupied()){
+            return "course session occupied";
+        }else {
+            enrollment.setStatus("pending");
+            enrollment.setEnrollmentDate(LocalDateTime.now());
+            enrollmentRepository.save(enrollment);
+            return "ok";
+        }
     }
 
     public List<Enrollment> getEnrollments() {
