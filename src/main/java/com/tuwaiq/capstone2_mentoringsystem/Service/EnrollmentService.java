@@ -47,6 +47,8 @@ public class EnrollmentService {
         }else {
             courseSession.setOccupied(true);
             courseSessionRepository.save(courseSession);
+            user.setBalance(user.getBalance()-course.getPrice());
+            userRepository.save(user);
             enrollment.setStatus("pending");
             enrollment.setEnrollmentDate(LocalDateTime.now());
             enrollmentRepository.save(enrollment);
