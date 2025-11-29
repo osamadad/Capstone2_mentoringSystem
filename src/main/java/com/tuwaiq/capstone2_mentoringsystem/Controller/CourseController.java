@@ -173,17 +173,12 @@ public class CourseController {
     }
 
     @GetMapping("/get-course-by-instructor-register-date/{registerDate}")
-    public ResponseEntity<?> getCoursesByInstructorRegisterDate(@PathVariable String registerDate) {
-        try {
-            LocalDateTime dateTime = LocalDateTime.parse(registerDate);
-            List<Course> courses = courseService.getCoursesByInstructorRegisterDate(dateTime);
-            if (courses.isEmpty()) {
-                return ResponseEntity.status(400).body(new ApiResponse("There are no courses from instructors registered after this date"));
-            } else {
-                return ResponseEntity.status(200).body(courses);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(new ApiResponse("Invalid date format. Use: YYYY-MM-DDTHH:MM:SS"));
+    public ResponseEntity<?> getCoursesByInstructorRegisterDate(@PathVariable LocalDateTime registerDate) {
+        List<Course> courses = courseService.getCoursesByInstructorRegisterDate(registerDate);
+        if (courses.isEmpty()) {
+            return ResponseEntity.status(400).body(new ApiResponse("There are no courses from instructors registered after this date"));
+        } else {
+            return ResponseEntity.status(200).body(courses);
         }
     }
 
