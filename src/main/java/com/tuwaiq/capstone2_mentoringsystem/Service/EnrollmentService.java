@@ -1,9 +1,11 @@
 package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
+import com.tuwaiq.capstone2_mentoringsystem.Models.CourseSession;
 import com.tuwaiq.capstone2_mentoringsystem.Models.Enrollment;
 import com.tuwaiq.capstone2_mentoringsystem.Models.User;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseSessionRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.EnrollmentRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +21,20 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final CourseSessionRepository courseSessionRepository;
 
     public String addEnrollment(Enrollment enrollment){
         User user = userRepository.findUserById(enrollment.getUserId());
         Course course = courseRepository.findCourseById(enrollment.getCourseId());
+        CourseSession courseSession= courseSessionRepository.findCourseSessionById(enrollment.getCourseSessionId());
         if (user==null){
             return "user id error";
         }
         if (course==null){
             return "course id error";
+        }
+        if (courseSession==null){
+            return "course session id error";
         }
         enrollment.setStatus("pending");
         enrollment.setEnrollmentDate(LocalDateTime.now());

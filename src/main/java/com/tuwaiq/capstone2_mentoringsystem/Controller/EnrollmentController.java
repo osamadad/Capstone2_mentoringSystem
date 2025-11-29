@@ -31,6 +31,8 @@ public class EnrollmentController {
                     return ResponseEntity.status(400).body(new ApiResponse("There are no users with this id found"));
                 case "course id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
+                case "course session id error":
+                    return ResponseEntity.status(400).body(new ApiResponse("There are no course sessions with this id found"));
                 default:
                     return ResponseEntity.status(400).body(new ApiResponse("General error"));
             }

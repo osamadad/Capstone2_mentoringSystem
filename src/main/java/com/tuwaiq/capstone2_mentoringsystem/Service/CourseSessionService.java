@@ -21,6 +21,7 @@ public class CourseSessionService {
         if (course==null){
             return false;
         }
+        courseSession.setOccupied(false);
         courseSessionRepository.save(courseSession);
         return true;
     }
@@ -41,6 +42,7 @@ public class CourseSessionService {
             oldCourseSession.setEndDate(courseSession.getEndDate());
             oldCourseSession.setStartTime(courseSession.getStartTime());
             oldCourseSession.setEndTime(courseSession.getEndTime());
+            oldCourseSession.setOccupied(courseSession.getOccupied());
             if (!oldCourseSession.getCourseId().equals(courseSession.getCourseId())){
                 return "course id error";
             }
