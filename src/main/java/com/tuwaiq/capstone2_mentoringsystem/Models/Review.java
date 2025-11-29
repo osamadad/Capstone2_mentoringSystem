@@ -32,5 +32,5 @@ public class Review {
     private Integer userId;
     @NotNull(message = "Sorry, the enrollment id can't be empty, please try again")
     @Column(columnDefinition = "int not null unique")
-    private Integer EnrollmentId;
+    private Integer enrollmentId;
 }

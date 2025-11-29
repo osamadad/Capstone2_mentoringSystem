@@ -18,12 +18,12 @@ public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addEnrollment(@RequestBody @Valid Enrollment enrollment, Errors errors){
+    @PostMapping("/add/{userId}")
+    public ResponseEntity<?> addEnrollment(@PathVariable Integer userId, @RequestBody @Valid Enrollment enrollment, Errors errors){
         if (errors.hasErrors()){
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
         }else {
-            String value= enrollmentService.addEnrollment(enrollment);
+            String value= enrollmentService.addEnrollment(userId,enrollment);
             switch (value){
                 case "ok":
                     return ResponseEntity.status(200).body(new ApiResponse("The enrollment have been added successfully"));
@@ -31,6 +31,8 @@ public class EnrollmentController {
                     return ResponseEntity.status(400).body(new ApiResponse("There are no users with this id found"));
                 case "course id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
+                case "user id mismatch":
+                    return ResponseEntity.status(400).body(new ApiResponse("You can't enroll with a user id that is not yours"));
                 case "course session id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no course sessions with this id found"));
                 case "course status error":
