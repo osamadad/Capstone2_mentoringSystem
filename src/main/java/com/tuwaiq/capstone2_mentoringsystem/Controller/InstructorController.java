@@ -2,6 +2,7 @@ package com.tuwaiq.capstone2_mentoringsystem.Controller;
 
 import Api.ApiResponse;
 import com.tuwaiq.capstone2_mentoringsystem.Models.Instructor;
+import com.tuwaiq.capstone2_mentoringsystem.Models.InstructorProfile;
 import com.tuwaiq.capstone2_mentoringsystem.Service.CategoryService;
 import com.tuwaiq.capstone2_mentoringsystem.Service.CourseService;
 import com.tuwaiq.capstone2_mentoringsystem.Service.InstructorService;
@@ -84,6 +85,16 @@ public class InstructorController {
             return ResponseEntity.status(200).body(new ApiResponse("All enrollment have been approved successfully"));
         } else {
             return ResponseEntity.status(400).body(new ApiResponse("There are no enrollment to approve"));
+        }
+    }
+
+    @GetMapping("/get-instructor-info/{courseId}")
+    public ResponseEntity<?> getInstructorInfoByCourseId( @PathVariable Integer courseId){
+        InstructorProfile instructorProfile=instructorService.getInstructorInfoByCourseId(courseId);
+        if (instructorProfile==null){
+            return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
+        }else {
+            return ResponseEntity.status(200).body(instructorProfile);
         }
     }
 }

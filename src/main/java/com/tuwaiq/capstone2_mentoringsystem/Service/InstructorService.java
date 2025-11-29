@@ -118,4 +118,9 @@ public class InstructorService {
             return true;
         }
     }
+
+    public InstructorProfile getInstructorInfoByCourseId(Integer courseId){
+        Course course= courseRepository.findCourseById(courseId);
+        return getInstructorInfo(course.getInstructorId());
+    }
 }
