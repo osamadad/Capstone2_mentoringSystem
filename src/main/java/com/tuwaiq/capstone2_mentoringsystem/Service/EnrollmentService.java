@@ -45,6 +45,8 @@ public class EnrollmentService {
         if (courseSession.getOccupied()){
             return "course session occupied";
         }else {
+            courseSession.setOccupied(true);
+            courseSessionRepository.save(courseSession);
             enrollment.setStatus("pending");
             enrollment.setEnrollmentDate(LocalDateTime.now());
             enrollmentRepository.save(enrollment);

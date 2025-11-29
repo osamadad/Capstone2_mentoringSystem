@@ -30,6 +30,8 @@ public class CourseSessionController {
                     return ResponseEntity.status(200).body(new ApiResponse("The course session have been added successfully"));
                 case "course id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
+                case "course status error":
+                    return ResponseEntity.status(400).body(new ApiResponse("You are still not approved by our admins, please wait for approval"));
                 case "instructor id mismatch":
                     return ResponseEntity.status(400).body(new ApiResponse("You are not the instructor for this course"));
                 default:

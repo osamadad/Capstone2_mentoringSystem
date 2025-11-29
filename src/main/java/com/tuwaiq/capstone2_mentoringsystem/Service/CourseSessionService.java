@@ -21,6 +21,9 @@ public class CourseSessionService {
         if (course == null) {
             return "course id error";
         }
+        if (course.getAdminStatus().equalsIgnoreCase("pending")){
+            return "course status error";
+        }
         if (!course.getInstructorId().equals(instructorId)) {
             return "instructor id mismatch";
         } else {
