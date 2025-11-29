@@ -18,19 +18,25 @@ public class ReviewController {
 
     private final ReviewService reviewsService;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addReview(@RequestBody @Valid Review reviews, Errors errors){
+    @PostMapping("/add/{userId}")
+    public ResponseEntity<?> addReview(@PathVariable Integer userId,@RequestBody @Valid Review reviews, Errors errors){
         if (errors.hasErrors()){
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
         }else {
-            String value= reviewsService.addReview(reviews);
+            String value= reviewsService.addReview(userId,reviews);
             switch (value){
                 case "ok":
                     return ResponseEntity.status(200).body(new ApiResponse("The review have been added successfully"));
+                case "review exist":
+                    return ResponseEntity.status(400).body(new ApiResponse("There is a written review already, and you can't review twitch, update your previous review"));
+                case "enrollment status error":
+                    return ResponseEntity.status(400).body(new ApiResponse("You need to finish your enrollment to review"));
+                case "enrollment id error":
+                    return ResponseEntity.status(400).body(new ApiResponse("There are no enrollments with this id found"));
                 case "user id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no users with this id found"));
-                case "course id error":
-                    return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
+                case "user id mismatch":
+                    return ResponseEntity.status(400).body(new ApiResponse("You can't review a course that with an enrollment that is not yours"));
                 default:
                     return ResponseEntity.status(400).body(new ApiResponse("General error"));
             }

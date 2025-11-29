@@ -73,20 +73,4 @@ public class UserService {
         userProfile.setUserId(user.getId());
         return userProfile;
     }
-
-    public String reviewACourse(Integer userId, Review review) {
-        if (!userId.equals(review.getUserId())) {
-            return "course session id mismatch";
-        }
-        Review existingReview=reviewRepository.getReviewByUserIdAndEnrollmentId(userId,review.getEnrollmentId());
-        if (existingReview!=null){
-            return "review exist";
-        }
-        String value="general error";
-        Enrollment enrollment = enrollmentRepository.findEnrollmentById(review.getEnrollmentId());
-        if (enrollment.getStatus().equalsIgnoreCase("finished")) {
-            value = reviewService.addReview(review);
-        }
-        return value;
-    }
 }

@@ -15,35 +15,46 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final ReviewRepository reviewsRepository;
+    private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final CourseService courseService;
 
-    public String addReview(Review reviews){
-        User user = userRepository.findUserById(reviews.getUserId());
+    public String addReview(Integer userId, Review review){
+        User user = userRepository.findUserById(review.getUserId());
         if (user==null){
             return "user id error";
         }
-        Enrollment enrollment = enrollmentRepository.findEnrollmentById(reviews.getEnrollmentId());
+        if (!userId.equals(user.getId())) {
+            return "user id id mismatch";
+        }
+        Enrollment enrollment = enrollmentRepository.findEnrollmentById(review.getEnrollmentId());
         if (enrollment==null){
             return "enrollment id error";
         }
-        reviews.setReviewDate(LocalDateTime.now());
-        reviewsRepository.save(reviews);
-        courseService.reCalculateCourseRating(enrollment.getCourseId());
-        return "ok";
+        if (!enrollment.getStatus().equalsIgnoreCase("finished")) {
+            return "enrollment status error";
+        }
+        Review existingReview=reviewRepository.getReviewByUserIdAndEnrollmentId(userId,enrollment.getId());
+        if (existingReview!=null){
+            return "review exist";
+        }else {
+            review.setReviewDate(LocalDateTime.now());
+            reviewRepository.save(review);
+            courseService.reCalculateCourseRating(enrollment.getCourseId());
+            return "ok";
+        }
     }
 
     public List<Review> getReviews(){
-        return reviewsRepository.findAll();
+        return reviewRepository.findAll();
     }
 
-    public String updateReview(Integer userId,Integer id, Review review){
+    public String updateReview(Integer userId, Integer id, Review review){
         if (!userId.equals(id)){
             return "user id mismatch";
         }
-        Review oldReviews = reviewsRepository.findReviewById(id);
+        Review oldReviews = reviewRepository.findReviewById(id);
         if (oldReviews==null){
             return "review id error";
         }else {
@@ -57,7 +68,7 @@ public class ReviewService {
             oldReviews.setContent(review.getContent());
             oldReviews.setUserId(review.getUserId());
             oldReviews.setEnrollmentId(review.getEnrollmentId());
-            reviewsRepository.save(oldReviews);
+            reviewRepository.save(oldReviews);
             return "ok";
         }
     }
@@ -66,11 +77,11 @@ public class ReviewService {
         if (!userId.equals(id)){
             return "user id mismatch";
         }
-        Review review = reviewsRepository.findReviewById(id);
+        Review review = reviewRepository.findReviewById(id);
         if (review ==null){
             return "review id error";
         }else {
-            reviewsRepository.delete(review);
+            reviewRepository.delete(review);
             return "ok";
         }
     }
