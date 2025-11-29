@@ -18,18 +18,20 @@ public class ReviewService {
     private final ReviewRepository reviewsRepository;
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final CourseService courseService;
 
     public String addReview(Review reviews){
         User user = userRepository.findUserById(reviews.getUserId());
         if (user==null){
             return "user id error";
         }
-        Enrollment course = enrollmentRepository.findEnrollmentById(reviews.getEnrollmentId());
-        if (course==null){
-            return "course id error";
+        Enrollment enrollment = enrollmentRepository.findEnrollmentById(reviews.getEnrollmentId());
+        if (enrollment==null){
+            return "enrollment id error";
         }
         reviews.setReviewDate(LocalDateTime.now());
         reviewsRepository.save(reviews);
+        courseService.reCalculateCourseRating(enrollment.getCourseId());
         return "ok";
     }
 

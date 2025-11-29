@@ -3,10 +3,9 @@ package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 import com.tuwaiq.capstone2_mentoringsystem.Models.Category;
 import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
+import com.tuwaiq.capstone2_mentoringsystem.Models.Enrollment;
 import com.tuwaiq.capstone2_mentoringsystem.Models.Instructor;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.CategoryRepository;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.InstructorRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,10 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final InstructorRepository instructorRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final ReviewRepository reviewRepository;
     private final CategoryRepository categoryRepository;
+    private final InstructorService instructorService;
 
     public String addCourse(Course course){
         Instructor instructor = instructorRepository.findInstructorById(course.getInstructorId());
@@ -86,5 +88,12 @@ public class CourseService {
             courseRepository.delete(course);
             return "ok";
         }
+    }
+
+    public void reCalculateCourseRating(Integer courseId){
+        Course course=courseRepository.findCourseById(courseId);
+        List<Enrollment> enrollments=enrollmentRepository.findEnrollmentsByCourseId(courseId);
+        course.setRating(reviewRepository.getAvgReviewRatingByEnrollments(enrollments));
+        instructorService.reCalculateInstructorRating(course.getInstructorId());
     }
 }

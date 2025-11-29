@@ -5,6 +5,7 @@ import com.tuwaiq.capstone2_mentoringsystem.Models.Category;
 import com.tuwaiq.capstone2_mentoringsystem.Models.Instructor;
 import com.tuwaiq.capstone2_mentoringsystem.Models.InstructorProfile;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.CategoryRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.InstructorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class InstructorService {
 
     private final InstructorRepository instructorRepository;
     private final CategoryRepository categoryRepository;
+    private final CourseRepository courseRepository;
 
     public Boolean addInstructor(Instructor instructor){
         Category category = categoryRepository.findCategoryById(instructor.getCategoryId());
@@ -93,5 +95,11 @@ public class InstructorService {
         instructorProfile.setYearsOfExperience(instructor.getYearsOfExperience());
         instructorProfile.setInstructorId(instructorProfile.getInstructorId());
         return instructorProfile;
+    }
+
+    public void reCalculateInstructorRating(Integer instructorId){
+        Instructor instructor = instructorRepository.findInstructorById(instructorId);
+        instructor.setRating(courseRepository.getAvgCoursesRatingByInstructorId(instructorId));
+        instructorRepository.save(instructor);
     }
 }

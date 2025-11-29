@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface InstructorRepository extends JpaRepository<Instructor,Integer> {
 
     Instructor findInstructorById(Integer id);
+
+
 }

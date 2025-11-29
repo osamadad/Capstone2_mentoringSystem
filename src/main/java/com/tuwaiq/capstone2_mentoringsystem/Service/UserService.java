@@ -15,24 +15,24 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final CourseRepository courseRepository;
+    private final ReviewRepository reviewRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final ReviewService reviewService;
 
-    public void addUser(User user){
+    public void addUser(User user) {
         user.setRegistrationDate(LocalDateTime.now());
         userRepository.save(user);
     }
 
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public Boolean updateUser(Integer id, User user){
-        User oldUser= userRepository.findUserById(id);
-        if (oldUser==null){
+    public Boolean updateUser(Integer id, User user) {
+        User oldUser = userRepository.findUserById(id);
+        if (oldUser == null) {
             return false;
-        }else {
+        } else {
             oldUser.setUsername(user.getUsername());
             oldUser.setPassword(user.getPassword());
             oldUser.setEmail(user.getEmail());
@@ -47,25 +47,25 @@ public class UserService {
         }
     }
 
-    public Boolean deleteUser(Integer id){
-        User user= userRepository.findUserById(id);
-        if (user==null){
+    public Boolean deleteUser(Integer id) {
+        User user = userRepository.findUserById(id);
+        if (user == null) {
             return false;
-        }else {
+        } else {
             userRepository.delete(user);
             return true;
         }
     }
 
-    public UserProfile getUserInfo(Integer userId){
-        User user=userRepository.findUserById(userId);
-        if (user==null){
+    public UserProfile getUserInfo(Integer userId) {
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
             return null;
         }
-        UserProfile userProfile=new UserProfile();
+        UserProfile userProfile = new UserProfile();
         userProfile.setUsername(user.getUsername());
         userProfile.setPhone(userProfile.getPhone());
-        Integer age = Period.between(user.getDateOfBirth(),LocalDate.now()).getYears();
+        Integer age = Period.between(user.getDateOfBirth(), LocalDate.now()).getYears();
         userProfile.setAge(age);
         userProfile.setGender(user.getGender());
         userProfile.setCountry(userProfile.getCountry());
@@ -74,19 +74,19 @@ public class UserService {
         return userProfile;
     }
 
-    public String reviewACourse(Integer userId, Review review){
-        if (!userId.equals(review.getUserId())){
+    public String reviewACourse(Integer userId, Review review) {
+        if (!userId.equals(review.getUserId())) {
             return "course session id mismatch";
         }
-        Course course=courseRepository.findCourseById(review.getCourseId());
-        List<Enrollment> enrollments= enrollmentRepository.getEnrollmentByUserIdAndCourseId(userId, review.getCourseId());
-        for (Enrollment enrollment:enrollments){
-                if (enrollment.getStatus().equalsIgnoreCase("finished")){
-
-                }
-
+        Review existingReview=reviewRepository.getReviewByUserIdAndEnrollmentId(userId,review.getEnrollmentId());
+        if (existingReview!=null){
+            return "review exist";
         }
-        String value=reviewService.addReview(review);
-
+        String value="general error";
+        Enrollment enrollment = enrollmentRepository.findEnrollmentById(review.getEnrollmentId());
+        if (enrollment.getStatus().equalsIgnoreCase("finished")) {
+            value = reviewService.addReview(review);
+        }
+        return value;
     }
 }
