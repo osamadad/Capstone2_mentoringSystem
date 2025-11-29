@@ -97,4 +97,14 @@ public class InstructorController {
             return ResponseEntity.status(200).body(instructorProfile);
         }
     }
+
+    @GetMapping("/get-instructor-sorted-by-rating}")
+    public ResponseEntity<?> getInstructorSortedByRating(){
+        List<Instructor> instructors=instructorService.getInstructorsSortedByRating();
+        if (instructors.isEmpty()){
+            return ResponseEntity.status(400).body(new ApiResponse("There are no instructors to show"));
+        }else {
+            return ResponseEntity.status(200).body(instructors);
+        }
+    }
 }

@@ -123,4 +123,8 @@ public class InstructorService {
         Course course= courseRepository.findCourseById(courseId);
         return getInstructorInfo(course.getInstructorId());
     }
+
+    public List<Instructor> getInstructorsSortedByRating(){
+        return instructorRepository.getInstructorsSortedByRating();
+    }
 }
