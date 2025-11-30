@@ -29,7 +29,12 @@ public class CourseSession {
     @NotNull(message = "Sorry, the session end time can't be empty, please try again")
     @Column(columnDefinition = "time not null")
     private LocalTime endTime;
-    @AssertFalse(message = "Sorry, the session occupation can't be true, please try again")
+    @Positive(message = "Sorry, the course max capacity must be a positive number, please try again")
+    @Column(columnDefinition = "int not null default 1")
+    private Integer maxCapacity;
+    @PositiveOrZero(message = "Sorry, the course capacity must be a positive number, please try again")
+    @Column(columnDefinition = "int not null default 0")
+    private Integer capacity;
     @Column(columnDefinition = "boolean default false")
     private Boolean occupied;
     @NotNull(message = "Sorry, the course id can't be empty, please try again")

@@ -74,4 +74,15 @@ public class UserService {
         userProfile.setUserId(user.getId());
         return userProfile;
     }
+
+    public Boolean addBalanceFunds(Integer userId, Double funds){
+        User user = userRepository.findUserById(userId);
+        if (user==null){
+            return false;
+        }else {
+            user.setBalance(user.getBalance()+funds);
+            userRepository.save(user);
+            return true;
+        }
+    }
 }

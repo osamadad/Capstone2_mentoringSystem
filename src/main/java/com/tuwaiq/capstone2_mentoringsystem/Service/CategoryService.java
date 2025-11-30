@@ -2,9 +2,11 @@ package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 import com.tuwaiq.capstone2_mentoringsystem.Models.Category;
 import com.tuwaiq.capstone2_mentoringsystem.Repository.CategoryRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -12,6 +14,7 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CourseRepository courseRepository;
 
     public void addCategory(Category category){
         categoryRepository.save(category);

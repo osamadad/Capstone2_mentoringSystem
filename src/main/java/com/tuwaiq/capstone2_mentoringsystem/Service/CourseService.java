@@ -9,6 +9,7 @@ import com.tuwaiq.capstone2_mentoringsystem.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,10 +39,6 @@ public class CourseService {
         if (category == null) {
             return "category id error";
         }
-        if (course.getType().equalsIgnoreCase("one-to-one")) {
-            course.setCapacity(1);
-            course.setGroupStatus("ready to start");
-        }
         course.setAdminStatus("pending");
         course.setGroupStatus("waiting for members");
         course.setRating(0.0);
@@ -65,7 +62,6 @@ public class CourseService {
             oldCourse.setTitle(course.getTitle());
             oldCourse.setDescription(course.getDescription());
             oldCourse.setType(course.getType());
-            oldCourse.setCapacity(course.getCapacity());
             oldCourse.setPrice(course.getPrice());
             oldCourse.setLevel(course.getLevel());
             oldCourse.setLocation(course.getLocation());
@@ -97,8 +93,90 @@ public class CourseService {
 
     public void reCalculateCourseRating(Integer courseId) {
         Course course = courseRepository.findCourseById(courseId);
-        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsByCourseId(courseId);
-        course.setRating(reviewRepository.getAvgReviewRatingByEnrollments(enrollments));
+        List<Integer> enrollmentsId = enrollmentRepository.findEnrollmentsIdByCourseId(courseId);
+        course.setRating(reviewRepository.getAvgReviewRatingByEnrollments(enrollmentsId));
+        courseRepository.save(course);
         instructorService.reCalculateInstructorRating(course.getInstructorId());
+    }
+
+    public String getCourseGroupStatus(Integer courseId) {
+        Course course = courseRepository.findCourseById(courseId);
+        return course.getGroupStatus();
+    }
+
+    public List<Course> getCoursesFromMyCity(String userCity) {
+        return courseRepository.getCoursesFromMyCity(userCity);
+    }
+
+    public List<Course> getCoursesByCategoryId(Integer categoryId) {
+        return courseRepository.findCourseByCategoryIdAndAdminStatus(categoryId, "approved");
+    }
+
+    public List<Course> getCoursesByInstructorId(Integer instructorId) {
+        return courseRepository.findCourseByInstructorIdAndAdminStatus(instructorId, "approved");
+    }
+
+    public List<Course> getCoursesByInstructorGender(String gender) {
+        return courseRepository.getCoursesByInstructorGender(gender);
+    }
+
+    public List<Course> getCoursesByInstructorExperienceAndCategory(Integer yearOfExperiences, Integer categoryId) {
+        return courseRepository.getCoursesByInstructorYearOfExperiencesAndCategory(yearOfExperiences, categoryId);
+    }
+
+    public List<Course> getCoursesByInstructorRatingAndCategory(Integer rating, Integer categoryId) {
+        return courseRepository.getCoursesByInstructorRatingAndCategory(rating, categoryId);
+    }
+
+    public List<Course> getCoursesByInstructorRegisterDate(LocalDateTime registerDate) {
+        return courseRepository.getCoursesByInstructorRegisterDate(registerDate);
+    }
+
+    public List<Course> getCoursesByLevel(String level) {
+        return courseRepository.findCoursesByLevel(level);
+    }
+
+    public List<Course> getAllCoursesOrderedByLevel() {
+        return courseRepository.findAllByOrderByLevel();
+    }
+
+    public List<Course> searchCoursesByKeyword(String keyword) {
+        return courseRepository.searchCoursesTitleOrDescriptionContainingSentence("%" + keyword + "%");
+    }
+
+    public List<Course> getCoursesAfterStartDate(LocalDate startDate) {
+        return courseRepository.getCoursesAfterStartDate(startDate);
+    }
+
+    public List<Course> getCoursesBeforeEndDate(LocalDate endDate) {
+        return courseRepository.getCoursesBeforeEndDate(endDate);
+    }
+
+    public List<Course> getCoursesByDateRange(LocalDate startDate, LocalDate endDate) {
+        return courseRepository.getCoursesByDateRange(startDate, endDate);
+    }
+
+    public List<Course> getCoursesByRating(Double rating) {
+        return courseRepository.findCoursesByRatingAfter(rating);
+    }
+
+    public List<Course> getAllCoursesOrderedByRating() {
+        return courseRepository.findAllByOrderByRatingDesc();
+    }
+
+    public List<Course> getCoursesByCategoryOrderedByRating(Integer categoryId) {
+        return courseRepository.findCoursesByCategoryIdOrderByRating(categoryId);
+    }
+
+    public List<Course> getCoursesByCategoryOrderedByPriceDesc(Integer categoryId) {
+        return courseRepository.findCoursesByCategoryIdOrderByPriceDesc(categoryId);
+    }
+
+    public List<Course> getAllCoursesOrderedByPrice() {
+        return courseRepository.findAllByOrderByPrice();
+    }
+
+    public List<Course> getCoursesByPriceRange(Double minimumPrice, Double maximumPrice) {
+        return courseRepository.getCoursesByPriceRange(minimumPrice, maximumPrice);
     }
 }

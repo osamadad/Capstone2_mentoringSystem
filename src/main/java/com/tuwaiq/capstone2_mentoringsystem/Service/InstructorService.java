@@ -1,13 +1,8 @@
 package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 
-import com.tuwaiq.capstone2_mentoringsystem.Models.Category;
-import com.tuwaiq.capstone2_mentoringsystem.Models.Course;
-import com.tuwaiq.capstone2_mentoringsystem.Models.Instructor;
-import com.tuwaiq.capstone2_mentoringsystem.Models.InstructorProfile;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.CategoryRepository;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.InstructorRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Models.*;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +16,12 @@ import java.util.List;
 public class InstructorService {
 
     private final InstructorRepository instructorRepository;
+    private final EnrollmentRepository enrollmentRepository;
     private final CategoryRepository categoryRepository;
     private final CourseRepository courseRepository;
+    private final CourseSessionRepository courseSessionRepository;
+    private final EnrollmentService enrollmentService;
+    private final UserRepository userRepository;
 
     public Boolean addInstructor(Instructor instructor) {
         Category category = categoryRepository.findCategoryById(instructor.getCategoryId());
@@ -105,5 +104,75 @@ public class InstructorService {
         Instructor instructor = instructorRepository.findInstructorById(instructorId);
         instructor.setRating(courseRepository.getAvgCoursesRatingByInstructorId(instructorId));
         instructorRepository.save(instructor);
+    }
+
+    public Boolean approveAllEnrollment(){
+        List<Enrollment> enrollments=enrollmentRepository.findAll();
+        if (enrollments.isEmpty()){
+            return false;
+        }else {
+            for (Enrollment enrollment:enrollments){
+                enrollment.setStatus("approved");
+                enrollmentRepository.save(enrollment);
+            }
+            return true;
+        }
+    }
+
+    public String approveEnrollment(Integer enrollmentId){
+        Enrollment enrollment = enrollmentRepository.findEnrollmentById(enrollmentId);
+        if (enrollment==null){
+            return "enrollment id error";
+        }
+        if (enrollment.getStatus().equalsIgnoreCase("approved")){
+            return "enrollment status error";
+        }
+        Course course= courseRepository.findCourseById(enrollment.getCourseId());
+        if (course==null){
+            return "course id error";
+        }
+        CourseSession courseSession= courseSessionRepository.findCourseSessionById(enrollment.getCourseSessionId());
+        if (courseSession==null){
+            return "course session id error";
+        }
+        if (courseSession.getCapacity()>=courseSession.getMaxCapacity()){
+            return "course capacity error";
+        }
+        courseSession.setCapacity(courseSession.getCapacity()+1);
+        if (course.getType().equalsIgnoreCase("group")){
+            if (courseSession.getCapacity().equals(courseSession.getMaxCapacity())){
+                course.setGroupStatus("ready to start");
+                courseSession.setOccupied(true);
+            }
+        }else {
+            courseSession.setOccupied(true);
+        }
+        courseSessionRepository.save(courseSession);
+        courseRepository.save(course);
+        enrollment.setStatus("approved");
+        enrollmentRepository.save(enrollment);
+        return "ok";
+    }
+
+    public String declineEnrollment(Integer enrollmentId){
+        Enrollment enrollment=enrollmentRepository.findEnrollmentById(enrollmentId);
+        if (enrollment==null){
+            return "enrollment id error";
+        }
+        User user=userRepository.findUserById(enrollment.getUserId());
+        if (user==null){
+            return "user id error";
+        }
+        enrollmentService.deleteEnrollment(user.getId(),enrollmentId);
+        return "ok";
+    }
+
+    public InstructorProfile getInstructorInfoByCourseId(Integer courseId){
+        Course course= courseRepository.findCourseById(courseId);
+        return getInstructorInfo(course.getInstructorId());
+    }
+
+    public List<Instructor> getInstructorsSortedByRating(){
+        return instructorRepository.getInstructorsSortedByRating();
     }
 }

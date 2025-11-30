@@ -44,8 +44,7 @@ public class UserController {
         if (errors.hasErrors()){
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
         }else {
-            Boolean value=userService.updateUser(id, user);
-            if (value){
+            if (userService.updateUser(id, user)){
                 return ResponseEntity.status(200).body(new ApiResponse("The user have been updated successfully"));
             }else {
                 return ResponseEntity.status(400).body(new ApiResponse("There are no users with this id found"));
@@ -55,8 +54,16 @@ public class UserController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id){
-        Boolean value= userService.deleteUser(id);
-        if (value){
+        if (userService.deleteUser(id)){
+            return ResponseEntity.status(200).body(new ApiResponse("The user have been deleted successfully"));
+        }else {
+            return ResponseEntity.status(400).body(new ApiResponse("There are no users with this id found"));
+        }
+    }
+
+    @PutMapping("/add-balance-funds/{userId}/{funds}")
+    public ResponseEntity<?> addBalanceFunds(@PathVariable Integer userId,@PathVariable Double funds){
+        if (userService.addBalanceFunds(userId,funds)){
             return ResponseEntity.status(200).body(new ApiResponse("The user have been deleted successfully"));
         }else {
             return ResponseEntity.status(400).body(new ApiResponse("There are no users with this id found"));
