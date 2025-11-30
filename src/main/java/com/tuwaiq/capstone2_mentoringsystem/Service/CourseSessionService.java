@@ -7,6 +7,8 @@ import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -21,11 +23,14 @@ public class CourseSessionService {
         if (course == null) {
             return "course id error";
         }
-        if (course.getAdminStatus().equalsIgnoreCase("pending")){
+        if (course.getAdminStatus().equalsIgnoreCase("pending")) {
             return "course status error";
         }
         if (!course.getInstructorId().equals(instructorId)) {
             return "instructor id mismatch";
+        }
+        if (checkSessionConflict(courseSession.getStartDate(), courseSession.getEndDate(), courseSession.getStartTime(), courseSession.getEndTime())) {
+            return "course session time error";
         } else {
             courseSession.setOccupied(false);
             courseSessionRepository.save(courseSession);
@@ -38,8 +43,8 @@ public class CourseSessionService {
     }
 
     public String updateCourseSession(Integer instructorId, Integer id, CourseSession courseSession) {
-        Integer instructorId2=getCourseInstructorId(courseSession);
-        if (instructorId2==null){
+        Integer instructorId2 = getCourseInstructorId(courseSession);
+        if (instructorId2 == null) {
             return "course id error";
         }
         if (!instructorId.equals(instructorId2)) {
@@ -48,6 +53,9 @@ public class CourseSessionService {
         CourseSession oldCourseSession = courseSessionRepository.findCourseSessionById(id);
         if (oldCourseSession == null) {
             return "course session id error";
+        }
+        if (checkSessionConflict(courseSession.getStartDate(), courseSession.getEndDate(), courseSession.getStartTime(), courseSession.getEndTime())) {
+            return "course session time error";
         } else {
             oldCourseSession.setStartDate(courseSession.getStartDate());
             oldCourseSession.setEndDate(courseSession.getEndDate());
@@ -68,16 +76,21 @@ public class CourseSessionService {
         if (courseSession == null) {
             return "course session id error";
         }
-        Integer instructorId2=getCourseInstructorId(courseSession);
-        if (instructorId2==null){
+        Integer instructorId2 = getCourseInstructorId(courseSession);
+        if (instructorId2 == null) {
             return "course id error";
         }
         if (!instructorId.equals(id)) {
             return "course session id mismatch";
-        }else {
+        } else {
             courseSessionRepository.delete(courseSession);
             return "ok";
         }
+    }
+
+    public Boolean checkSessionConflict(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        List<CourseSession> conflictingCourseSessions = courseSessionRepository.getCourseSessionByTimeFrame(startDate, endDate, startTime, endTime);
+        return !conflictingCourseSessions.isEmpty();
     }
 
     public Integer getCourseInstructorId(CourseSession courseSession) {
