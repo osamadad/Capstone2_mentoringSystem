@@ -29,7 +29,6 @@ public class CourseSession {
     @NotNull(message = "Sorry, the session end time can't be empty, please try again")
     @Column(columnDefinition = "time not null")
     private LocalTime endTime;
-    @AssertFalse(message = "Sorry, the session occupation can't be true, please try again")
     @Column(columnDefinition = "boolean default false")
     private Boolean occupied;
     @NotNull(message = "Sorry, the course id can't be empty, please try again")
