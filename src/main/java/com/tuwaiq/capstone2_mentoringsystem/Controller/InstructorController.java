@@ -23,35 +23,35 @@ public class InstructorController {
     private final CategoryService categoryService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addInstructor(@RequestBody @Valid Instructor instructor, Errors errors){
-        if (errors.hasErrors()){
+    public ResponseEntity<?> addInstructor(@RequestBody @Valid Instructor instructor, Errors errors) {
+        if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
-        }else {
-            if (instructorService.addInstructor(instructor)){
+        } else {
+            if (instructorService.addInstructor(instructor)) {
                 return ResponseEntity.status(200).body(new ApiResponse("The instructor have been added successfully, pleas wait for our admins to approve of you"));
-            }else {
+            } else {
                 return ResponseEntity.status(400).body(new ApiResponse("There are no categories with this id found"));
             }
         }
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getInstructor(){
-        List<Instructor> instructors=instructorService.getInstructors();
-        if (instructors.isEmpty()){
+    public ResponseEntity<?> getInstructor() {
+        List<Instructor> instructors = instructorService.getInstructors();
+        if (instructors.isEmpty()) {
             return ResponseEntity.status(400).body(new ApiResponse("There are no instructors to show"));
-        }else {
+        } else {
             return ResponseEntity.status(200).body(instructors);
         }
     }
 
     @PutMapping("/update/{instructorId}/{id}")
-    public ResponseEntity<?> updateInstructor(@PathVariable Integer instructorId, @PathVariable Integer id, @RequestBody @Valid Instructor instructor, Errors errors){
-        if (errors.hasErrors()){
+    public ResponseEntity<?> updateInstructor(@PathVariable Integer instructorId, @PathVariable Integer id, @RequestBody @Valid Instructor instructor, Errors errors) {
+        if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
-        }else {
-            String value=instructorService.updateInstructor(instructorId,id, instructor);
-            switch (value){
+        } else {
+            String value = instructorService.updateInstructor(instructorId, id, instructor);
+            switch (value) {
                 case "ok":
                     return ResponseEntity.status(200).body(new ApiResponse("The instructor have been updated successfully, if you changes your field pleas wait for our admins to approve of you"));
                 case "instructor id error":
@@ -65,9 +65,9 @@ public class InstructorController {
     }
 
     @DeleteMapping("/delete/{instructorId}/{id}")
-    public ResponseEntity<?> deleteInstructor(@PathVariable Integer instructorId, @PathVariable Integer id){
-        String value= instructorService.deleteInstructor(instructorId,id);
-        switch (value){
+    public ResponseEntity<?> deleteInstructor(@PathVariable Integer instructorId, @PathVariable Integer id) {
+        String value = instructorService.deleteInstructor(instructorId, id);
+        switch (value) {
             case "ok":
                 return ResponseEntity.status(200).body(new ApiResponse("The instructor have been deleted successfully"));
             case "instructor id error":
@@ -88,22 +88,52 @@ public class InstructorController {
         }
     }
 
+    @PutMapping("/approve-enrollment/{enrollmentId}")
+    public ResponseEntity<?> approveEnrollment(@PathVariable Integer enrollmentId) {
+        String value = instructorService.approveEnrollment(enrollmentId);
+        switch (value) {
+            case "ok":
+                return ResponseEntity.status(200).body(new ApiResponse("The enrollment have been approved successfully"));
+            case "enrollment id error":
+                return ResponseEntity.status(400).body(new ApiResponse("There are no enrollments with this id found"));
+            case "course id mismatch":
+                return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this enrollment id found"));
+            default:
+                return ResponseEntity.status(400).body(new ApiResponse("General error"));
+        }
+    }
+
+    @PutMapping("/approve-enrollment/{enrollmentId}")
+    public ResponseEntity<?> declineEnrollment(@PathVariable Integer enrollmentId) {
+        String value = instructorService.declineEnrollment(enrollmentId);
+        switch (value) {
+            case "ok":
+                return ResponseEntity.status(200).body(new ApiResponse("The enrollment have been approved successfully"));
+            case "enrollment id error":
+                return ResponseEntity.status(400).body(new ApiResponse("There are no enrollments with this id found"));
+            case "course id mismatch":
+                return ResponseEntity.status(400).body(new ApiResponse("There are no users with this enrollment id found"));
+            default:
+                return ResponseEntity.status(400).body(new ApiResponse("General error"));
+        }
+    }
+
     @GetMapping("/get-instructor-info/{courseId}")
-    public ResponseEntity<?> getInstructorInfoByCourseId( @PathVariable Integer courseId){
-        InstructorProfile instructorProfile=instructorService.getInstructorInfoByCourseId(courseId);
-        if (instructorProfile==null){
+    public ResponseEntity<?> getInstructorInfoByCourseId(@PathVariable Integer courseId) {
+        InstructorProfile instructorProfile = instructorService.getInstructorInfoByCourseId(courseId);
+        if (instructorProfile == null) {
             return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
-        }else {
+        } else {
             return ResponseEntity.status(200).body(instructorProfile);
         }
     }
 
     @GetMapping("/get-instructor-sorted-by-rating}")
-    public ResponseEntity<?> getInstructorSortedByRating(){
-        List<Instructor> instructors=instructorService.getInstructorsSortedByRating();
-        if (instructors.isEmpty()){
+    public ResponseEntity<?> getInstructorSortedByRating() {
+        List<Instructor> instructors = instructorService.getInstructorsSortedByRating();
+        if (instructors.isEmpty()) {
             return ResponseEntity.status(400).body(new ApiResponse("There are no instructors to show"));
-        }else {
+        } else {
             return ResponseEntity.status(200).body(instructors);
         }
     }

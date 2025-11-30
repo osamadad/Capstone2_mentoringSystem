@@ -2,10 +2,7 @@ package com.tuwaiq.capstone2_mentoringsystem.Service;
 
 
 import com.tuwaiq.capstone2_mentoringsystem.Models.*;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.CategoryRepository;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.CourseRepository;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.EnrollmentRepository;
-import com.tuwaiq.capstone2_mentoringsystem.Repository.InstructorRepository;
+import com.tuwaiq.capstone2_mentoringsystem.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +19,8 @@ public class InstructorService {
     private final EnrollmentRepository enrollmentRepository;
     private final CategoryRepository categoryRepository;
     private final CourseRepository courseRepository;
+    private final EnrollmentService enrollmentService;
+    private final UserRepository userRepository;
 
     public Boolean addInstructor(Instructor instructor) {
         Category category = categoryRepository.findCategoryById(instructor.getCategoryId());
@@ -117,6 +116,40 @@ public class InstructorService {
             }
             return true;
         }
+    }
+
+    public String approveEnrollment(Integer enrollmentId){
+        Enrollment enrollment = enrollmentRepository.findEnrollmentById(enrollmentId);
+        if (enrollment==null){
+            return "enrollment id error";
+        }
+        Course course= courseRepository.findCourseById(enrollment.getCourseId());
+        if (course==null){
+            return "course id error";
+        }
+        enrollment.setStatus("approved");
+        if (course.getType().equalsIgnoreCase("group")){
+            course.setCapacity(course.getMaxCapacity()+1);
+            if (course.getCapacity().equals(course.getMaxCapacity())){
+                course.setGroupStatus("ready to start");
+            }
+            courseRepository.save(course);
+        }
+        enrollmentRepository.save(enrollment);
+        return "ok";
+    }
+
+    public String declineEnrollment(Integer enrollmentId){
+        Enrollment enrollment=enrollmentRepository.findEnrollmentById(enrollmentId);
+        if (enrollment==null){
+            return "enrollment id error";
+        }
+        User user=userRepository.findUserById(enrollment.getUserId());
+        if (user==null){
+            return "user id error";
+        }
+        enrollmentService.deleteEnrollment(user.getId(),enrollmentId);
+        return "ok";
     }
 
     public InstructorProfile getInstructorInfoByCourseId(Integer courseId){
