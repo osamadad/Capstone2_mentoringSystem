@@ -103,7 +103,7 @@ public class InstructorController {
         }
     }
 
-    @PutMapping("/approve-enrollment/{enrollmentId}")
+    @PutMapping("/decline-enrollment/{enrollmentId}")
     public ResponseEntity<?> declineEnrollment(@PathVariable Integer enrollmentId) {
         String value = instructorService.declineEnrollment(enrollmentId);
         switch (value) {
@@ -128,7 +128,7 @@ public class InstructorController {
         }
     }
 
-    @GetMapping("/get-instructor-sorted-by-rating}")
+    @GetMapping("/get-instructor-sorted-by-rating")
     public ResponseEntity<?> getInstructorSortedByRating() {
         List<Instructor> instructors = instructorService.getInstructorsSortedByRating();
         if (instructors.isEmpty()) {
