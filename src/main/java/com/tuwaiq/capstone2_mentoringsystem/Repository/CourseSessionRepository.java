@@ -14,6 +14,6 @@ public interface CourseSessionRepository extends JpaRepository<CourseSession,Int
 
     CourseSession findCourseSessionById(Integer id);
 
-    @Query("select course from CourseSession course where course.startDate<=?2 and course.endDate>=?1 and course.endTime>?3 and course.startDate<?4")
-    List<CourseSession> getCourseSessionByTimeFrame(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime);
+    @Query("select course from CourseSession course where course.startDate<=?2 and course.endDate>=?1 and course.endTime>?3 and course.startTime<?4 and course.courseId=?5")
+    List<CourseSession> getCourseSessionByTimeFrame(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer courseId);
 }

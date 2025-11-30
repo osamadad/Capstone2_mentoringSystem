@@ -29,7 +29,7 @@ public class CourseSessionService {
         if (!course.getInstructorId().equals(instructorId)) {
             return "instructor id mismatch";
         }
-        if (checkSessionConflict(courseSession.getStartDate(), courseSession.getEndDate(), courseSession.getStartTime(), courseSession.getEndTime())) {
+        if (checkSessionConflict(courseSession.getStartDate(), courseSession.getEndDate(), courseSession.getStartTime(), courseSession.getEndTime(),course.getId())) {
             return "course session time error";
         } else {
             if (course.getType().equalsIgnoreCase("one-to-one")) {
@@ -59,7 +59,7 @@ public class CourseSessionService {
         if (oldCourseSession == null) {
             return "course session id error";
         }
-        if (checkSessionConflict(courseSession.getStartDate(), courseSession.getEndDate(), courseSession.getStartTime(), courseSession.getEndTime())) {
+        if (checkSessionConflict(courseSession.getStartDate(), courseSession.getEndDate(), courseSession.getStartTime(), courseSession.getEndTime(),courseSession.getCourseId())) {
             return "course session time error";
         } else {
             oldCourseSession.setStartDate(courseSession.getStartDate());
@@ -94,8 +94,8 @@ public class CourseSessionService {
         }
     }
 
-    public Boolean checkSessionConflict(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        List<CourseSession> conflictingCourseSessions = courseSessionRepository.getCourseSessionByTimeFrame(startDate, endDate, startTime, endTime);
+    public Boolean checkSessionConflict(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, Integer courseId) {
+        List<CourseSession> conflictingCourseSessions = courseSessionRepository.getCourseSessionByTimeFrame(startDate, endDate, startTime, endTime, courseId);
         return !conflictingCourseSessions.isEmpty();
     }
 
