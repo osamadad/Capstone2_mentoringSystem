@@ -19,6 +19,7 @@ public class InstructorService {
     private final EnrollmentRepository enrollmentRepository;
     private final CategoryRepository categoryRepository;
     private final CourseRepository courseRepository;
+    private final CourseSessionRepository courseSessionRepository;
     private final EnrollmentService enrollmentService;
     private final UserRepository userRepository;
 
@@ -133,12 +134,20 @@ public class InstructorService {
         if (course.getCapacity()>=course.getMaxCapacity()){
             return "course capacity error";
         }
+        CourseSession courseSession= courseSessionRepository.findCourseSessionById(enrollment.getCourseSessionId());
+        if (courseSession==null){
+            return "course session id error";
+        }
         course.setCapacity(course.getCapacity()+1);
         if (course.getType().equalsIgnoreCase("group")){
             if (course.getCapacity().equals(course.getMaxCapacity())){
                 course.setGroupStatus("ready to start");
+                courseSession.setOccupied(true);
             }
+        }else {
+            courseSession.setOccupied(true);
         }
+        courseSessionRepository.save(courseSession);
         courseRepository.save(course);
         enrollment.setStatus("approved");
         enrollmentRepository.save(enrollment);

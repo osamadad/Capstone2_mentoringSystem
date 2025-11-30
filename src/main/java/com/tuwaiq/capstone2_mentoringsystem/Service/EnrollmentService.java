@@ -51,8 +51,6 @@ public class EnrollmentService {
         if (courseSession.getOccupied()){
             return "course session occupied";
         }else {
-            courseSession.setOccupied(true);
-            courseSessionRepository.save(courseSession);
             user.setBalance(user.getBalance()-course.getPrice());
             userRepository.save(user);
             enrollment.setStatus("pending");
