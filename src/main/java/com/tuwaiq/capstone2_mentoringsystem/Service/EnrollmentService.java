@@ -63,10 +63,18 @@ public class EnrollmentService {
         return enrollmentRepository.findAll();
     }
 
-    public String deleteEnrollment(Integer userId, Integer id) {
-        Enrollment enrollment = enrollmentRepository.findEnrollmentById(id);
+    public String deleteEnrollment(Integer userId, Integer enrollmentId) {
+        Enrollment enrollment = enrollmentRepository.findEnrollmentById(enrollmentId);
+        User user=userRepository.findUserById(userId);
         if (enrollment == null) {
             return "enrollment id error";
+        }
+        if (user==null){
+            return "user id error";
+        }
+        Course course=courseRepository.findCourseById(enrollment.getCourseId());
+        if (course==null){
+            return "course id error";
         }
         if (!enrollment.getStatus().equalsIgnoreCase("pending")){
             return "enrollment status error";
@@ -74,6 +82,7 @@ public class EnrollmentService {
         if (!userId.equals(enrollment.getUserId())) {
             return "user id mismatch";
         } else {
+            user.setBalance(user.getBalance()+course.getPrice());
             enrollmentRepository.delete(enrollment);
             return "ok";
         }
