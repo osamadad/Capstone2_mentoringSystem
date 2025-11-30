@@ -96,4 +96,25 @@ public class EnrollmentService {
             return "ok";
         }
     }
+
+    public String progressEnrollment(Integer enrollmentId){
+        Enrollment enrollment=enrollmentRepository.findEnrollmentById(enrollmentId);
+        if (enrollment==null){
+            return "enrollment id error";
+        }else {
+            if (enrollment.getStatus().equalsIgnoreCase("approved")){
+                enrollment.setStatus("in progress");
+                enrollmentRepository.save(enrollment);
+                return "to in progress";
+            }else if (enrollment.getStatus().equalsIgnoreCase("in progress")) {
+                enrollment.setStatus("finished");
+                enrollmentRepository.save(enrollment);
+                return "to finished";
+            }else if (enrollment.getStatus().equalsIgnoreCase("finished")){
+                return "already finish";
+            }else {
+                return "pending";
+            }
+        }
+    }
 }

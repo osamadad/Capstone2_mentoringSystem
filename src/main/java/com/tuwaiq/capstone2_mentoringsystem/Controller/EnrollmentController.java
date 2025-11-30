@@ -23,8 +23,7 @@ public class EnrollmentController {
         if (errors.hasErrors()){
             return ResponseEntity.status(400).body(new ApiResponse(errors.getFieldError().getDefaultMessage()));
         }else {
-            String value= enrollmentService.addEnrollment(userId,enrollment);
-            switch (value){
+            switch (enrollmentService.addEnrollment(userId,enrollment)){
                 case "ok":
                     return ResponseEntity.status(200).body(new ApiResponse("The enrollment have been added successfully"));
                 case "user id error":
@@ -63,8 +62,7 @@ public class EnrollmentController {
 
     @DeleteMapping("/delete/{userId}/{id}")
     public ResponseEntity<?> deleteEnrollment(@PathVariable Integer userId, @PathVariable Integer id){
-        String value= enrollmentService.deleteEnrollment(userId,id);
-        switch (value){
+        switch (enrollmentService.deleteEnrollment(userId,id)){
             case "ok":
                 return ResponseEntity.status(200).body(new ApiResponse("The enrollment have been deleted successfully"));
             case "enrollment id error":
@@ -73,6 +71,24 @@ public class EnrollmentController {
                 return ResponseEntity.status(400).body(new ApiResponse("You can't withdraw your enrollment after it been approved"));
             case "user id mismatch":
                 return ResponseEntity.status(400).body(new ApiResponse("You can't delete an enrollment that is not yours"));
+            default:
+                return ResponseEntity.status(400).body(new ApiResponse("General error"));
+        }
+    }
+
+    @PutMapping("/progress-enrollment/{enrollmentId}")
+    public ResponseEntity<?> deleteEnrollment(@PathVariable Integer enrollmentId){
+        switch (enrollmentService.progressEnrollment(enrollmentId)){
+            case "to in progress":
+                return ResponseEntity.status(200).body(new ApiResponse("The enrollment is now in progress"));
+            case "enrollment id error":
+                return ResponseEntity.status(400).body(new ApiResponse("There are no enrollments with this id found"));
+            case "to finished":
+                return ResponseEntity.status(200).body(new ApiResponse("The enrollment is now finished"));
+            case "already finish":
+                return ResponseEntity.status(200).body(new ApiResponse("The enrollment is already finished"));
+            case "pending":
+                return ResponseEntity.status(200).body(new ApiResponse("The enrollment is pending approve it first"));
             default:
                 return ResponseEntity.status(400).body(new ApiResponse("General error"));
         }

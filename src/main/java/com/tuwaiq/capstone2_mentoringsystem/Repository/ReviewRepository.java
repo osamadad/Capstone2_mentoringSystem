@@ -17,5 +17,7 @@ public interface ReviewRepository extends JpaRepository<Review,Integer> {
     Review getReviewByUserIdAndEnrollmentId(Integer userId, Integer enrollmentId);
 
     @Query("select avg (review.rating) from Review review where review.enrollmentId in ?1")
-    Double getAvgReviewRatingByEnrollments(List<Enrollment> courseEnrollment);
+    Double getAvgReviewRatingByEnrollments(List<Integer> enrollmentIds);
+
+
 }

@@ -93,8 +93,9 @@ public class CourseService {
 
     public void reCalculateCourseRating(Integer courseId) {
         Course course = courseRepository.findCourseById(courseId);
-        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsByCourseId(courseId);
-        course.setRating(reviewRepository.getAvgReviewRatingByEnrollments(enrollments));
+        List<Integer> enrollmentsId = enrollmentRepository.findEnrollmentsIdByCourseId(courseId);
+        course.setRating(reviewRepository.getAvgReviewRatingByEnrollments(enrollmentsId));
+        courseRepository.save(course);
         instructorService.reCalculateInstructorRating(course.getInstructorId());
     }
 
