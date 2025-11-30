@@ -119,7 +119,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/get-course-by-category/{categoryId}/approved")
+    @GetMapping("/get-course-by-category/{categoryId}")
     public ResponseEntity<?> getCoursesByCategory(@PathVariable Integer categoryId) {
         List<Course> courses = courseService.getCoursesByCategoryId(categoryId);
         if (courses.isEmpty()) {
@@ -129,7 +129,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/get-course-by-instructor/{instructorId}/approved")
+    @GetMapping("/get-course-by-instructor/{instructorId}")
     public ResponseEntity<?> getCoursesByInstructor(@PathVariable Integer instructorId) {
         List<Course> courses = courseService.getCoursesByInstructorId(instructorId);
         if (courses.isEmpty()) {
@@ -152,7 +152,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/get-course-by-instructor-experience-and-category/{yearOfExperiences}/category/{categoryId}")
+    @GetMapping("/get-course-by-instructor-experience-and-category/{yearOfExperiences}/{categoryId}")
     public ResponseEntity<?> getCoursesByInstructorExperienceAndCategory(@PathVariable Integer yearOfExperiences, @PathVariable Integer categoryId) {
         List<Course> courses = courseService.getCoursesByInstructorExperienceAndCategory(yearOfExperiences, categoryId);
         if (courses.isEmpty()) {
@@ -162,7 +162,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/get-course-by-instructor-rating-and-category/{rating}/category/{categoryId}")
+    @GetMapping("/get-course-by-instructor-rating-and-category/{rating}/{categoryId}")
     public ResponseEntity<?> getCoursesByInstructorRatingAndCategory(@PathVariable Integer rating, @PathVariable Integer categoryId) {
         List<Course> courses = courseService.getCoursesByInstructorRatingAndCategory(rating, categoryId);
         if (courses.isEmpty()) {
@@ -257,7 +257,7 @@ public class CourseController {
 
     @GetMapping("/get-course-by-rating-ordered")
     public ResponseEntity<?> getAllCoursesOrderedByRating() {
-        List<Course> courses = courseService.getAllCoursesOrderedByRatingAsc();
+        List<Course> courses = courseService.getAllCoursesOrderedByRating();
         if (courses.isEmpty()) {
             return ResponseEntity.status(400).body(new ApiResponse("There are no courses to show"));
         } else {
@@ -265,7 +265,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/get-course-by-category-ordered-by-rating/{categoryId}/ordered-by-rating")
+    @GetMapping("/get-course-by-category-ordered-by-rating/{categoryId}")
     public ResponseEntity<?> getCoursesByCategoryOrderedByRating(@PathVariable Integer categoryId) {
         List<Course> courses = courseService.getCoursesByCategoryOrderedByRating(categoryId);
         if (courses.isEmpty()) {
@@ -275,7 +275,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/get-course-by-category-ordered-by-price/{categoryId}/ordered-by-price-desc")
+    @GetMapping("/get-course-by-category-ordered-by-price/{categoryId}")
     public ResponseEntity<?> getCoursesByCategoryOrderedByPrice(@PathVariable Integer categoryId) {
         List<Course> courses = courseService.getCoursesByCategoryOrderedByPriceDesc(categoryId);
         if (courses.isEmpty()) {

@@ -34,7 +34,7 @@ public interface CourseRepository extends JpaRepository<Course,Integer> {
     @Query("select course from Course course where course.instructorId in (select intructor.id from Instructor intructor where intructor.rating>=?1 and intructor.categoryId=?2) and course.adminStatus='approved'")
     List<Course> getCoursesByInstructorRatingAndCategory(Integer rating, Integer categoryId);
 
-    @Query("select course from Course course where course.instructorId in (select intructor.id from Instructor intructor where intructor.registerDate>=?1) and course.adminStatus='approved'")
+    @Query("select course from Course course where course.instructorId in (select intructor.id from Instructor intructor where intructor.registerDate<=?1) and course.adminStatus='approved'")
     List<Course> getCoursesByInstructorRegisterDate(LocalDateTime registerDate);
 
     List<Course> findCoursesByLevel(String level);
@@ -53,9 +53,9 @@ public interface CourseRepository extends JpaRepository<Course,Integer> {
     @Query("select course from Course course where exists (select 1 from CourseSession courseSession where  courseSession.startDate>=?1 and courseSession.endDate<=?2 and courseSession.courseId=course.id) and course.adminStatus='approved'")
     List<Course> getCoursesByDateRange(LocalDate startDate, LocalDate endDate);
 
-    List<Course> findCoursesByRating(Double rating);
+    List<Course> findCoursesByRatingAfter(Double ratingAfter);
 
-    List<Course> findAllByOrderByRatingAsc();
+    List<Course> findAllByOrderByRatingDesc();
 
     List<Course> findCoursesByCategoryIdOrderByRating(Integer categoryId);
 

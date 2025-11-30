@@ -99,7 +99,7 @@ public class CourseService {
         instructorService.reCalculateInstructorRating(course.getInstructorId());
     }
 
-    public String getCourseGroupStatus(Integer courseId){
+    public String getCourseGroupStatus(Integer courseId) {
         Course course = courseRepository.findCourseById(courseId);
         return course.getGroupStatus();
     }
@@ -157,11 +157,11 @@ public class CourseService {
     }
 
     public List<Course> getCoursesByRating(Double rating) {
-        return courseRepository.findCoursesByRating(rating);
+        return courseRepository.findCoursesByRatingAfter(rating);
     }
 
-    public List<Course> getAllCoursesOrderedByRatingAsc() {
-        return courseRepository.findAllByOrderByRatingAsc();
+    public List<Course> getAllCoursesOrderedByRating() {
+        return courseRepository.findAllByOrderByRatingDesc();
     }
 
     public List<Course> getCoursesByCategoryOrderedByRating(Integer categoryId) {
