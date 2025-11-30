@@ -36,6 +36,9 @@ public class EnrollmentService {
         if (course == null) {
             return "course id error";
         }
+        if(!(user.getBalance()>=course.getPrice())){
+            return "user balance error";
+        }
         if (course.getAdminStatus().equalsIgnoreCase("pending")){
             return "course status error";
         }
@@ -64,6 +67,9 @@ public class EnrollmentService {
         Enrollment enrollment = enrollmentRepository.findEnrollmentById(id);
         if (enrollment == null) {
             return "enrollment id error";
+        }
+        if (!enrollment.getStatus().equalsIgnoreCase("pending")){
+            return "enrollment status error";
         }
         if (!userId.equals(enrollment.getUserId())) {
             return "user id mismatch";

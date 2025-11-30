@@ -29,6 +29,8 @@ public class EnrollmentController {
                     return ResponseEntity.status(200).body(new ApiResponse("The enrollment have been added successfully"));
                 case "user id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no users with this id found"));
+                case "user balance error":
+                    return ResponseEntity.status(400).body(new ApiResponse("You don't have enough balance in your account to enroll"));
                 case "course id error":
                     return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this id found"));
                 case "user id mismatch":
@@ -63,6 +65,8 @@ public class EnrollmentController {
                 return ResponseEntity.status(200).body(new ApiResponse("The enrollment have been deleted successfully"));
             case "enrollment id error":
                 return ResponseEntity.status(400).body(new ApiResponse("There are no enrollments with this id found"));
+            case "enrollment status error":
+                return ResponseEntity.status(400).body(new ApiResponse("You can't withdraw your enrollment after it been approved"));
             case "user id mismatch":
                 return ResponseEntity.status(400).body(new ApiResponse("You can't delete an enrollment that is not yours"));
             default:
