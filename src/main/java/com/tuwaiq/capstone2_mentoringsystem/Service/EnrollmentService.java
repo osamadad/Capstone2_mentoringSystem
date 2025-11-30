@@ -42,6 +42,9 @@ public class EnrollmentService {
         if (course.getAdminStatus().equalsIgnoreCase("pending")){
             return "course status error";
         }
+        if (course.getCapacity()>=course.getMaxCapacity()){
+            return "course capacity error";
+        }
         if (courseSession == null) {
             return "course session id error";
         }

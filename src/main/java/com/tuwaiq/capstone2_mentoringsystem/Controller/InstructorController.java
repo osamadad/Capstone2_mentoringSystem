@@ -98,6 +98,8 @@ public class InstructorController {
                 return ResponseEntity.status(400).body(new ApiResponse("There are no enrollments with this id found"));
             case "course id mismatch":
                 return ResponseEntity.status(400).body(new ApiResponse("There are no courses with this enrollment id found"));
+            case "course capacity error":
+                return ResponseEntity.status(400).body(new ApiResponse("You can't approve more enrollment to this course you have reached max capacity"));
             default:
                 return ResponseEntity.status(400).body(new ApiResponse("General error"));
         }

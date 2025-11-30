@@ -123,18 +123,24 @@ public class InstructorService {
         if (enrollment==null){
             return "enrollment id error";
         }
+        if (enrollment.getStatus().equalsIgnoreCase("approved")){
+            return "enrollment status error";
+        }
         Course course= courseRepository.findCourseById(enrollment.getCourseId());
         if (course==null){
             return "course id error";
         }
-        enrollment.setStatus("approved");
+        if (course.getCapacity()>=course.getMaxCapacity()){
+            return "course capacity error";
+        }
+        course.setCapacity(course.getCapacity()+1);
         if (course.getType().equalsIgnoreCase("group")){
-            course.setCapacity(course.getMaxCapacity()+1);
             if (course.getCapacity().equals(course.getMaxCapacity())){
                 course.setGroupStatus("ready to start");
             }
-            courseRepository.save(course);
         }
+        courseRepository.save(course);
+        enrollment.setStatus("approved");
         enrollmentRepository.save(enrollment);
         return "ok";
     }
