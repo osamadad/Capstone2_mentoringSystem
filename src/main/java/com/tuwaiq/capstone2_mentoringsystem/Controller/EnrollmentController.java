@@ -39,6 +39,8 @@ public class EnrollmentController {
                     return ResponseEntity.status(400).body(new ApiResponse("There are no course sessions with this id found"));
                 case "course capacity error":
                     return ResponseEntity.status(400).body(new ApiResponse("You can't enroll to this course it reached it's max capacity"));
+                case "enrollment exist":
+                    return ResponseEntity.status(400).body(new ApiResponse("You already have and enrollment pending for this course"));
                 case "course status error":
                     return ResponseEntity.status(400).body(new ApiResponse("Sorry, the course have not been approved yet, pleas try again later"));
                 case "course session occupied":

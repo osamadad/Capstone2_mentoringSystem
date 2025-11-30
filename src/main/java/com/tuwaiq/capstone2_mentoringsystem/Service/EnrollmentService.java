@@ -36,6 +36,14 @@ public class EnrollmentService {
         if (course == null) {
             return "course id error";
         }
+        List<Enrollment> userEnrollment=enrollmentRepository.findEnrollmentsByCourseIdAndUserId(course.getId(),user.getId());
+        if (!userEnrollment.isEmpty()){
+            for (Enrollment enrollment1:userEnrollment){
+                if (enrollment1.getStatus().equalsIgnoreCase("pending")){
+                    return "enrollment exist";
+                }
+            }
+        }
         if(!(user.getBalance()>=course.getPrice())){
             return "user balance error";
         }
