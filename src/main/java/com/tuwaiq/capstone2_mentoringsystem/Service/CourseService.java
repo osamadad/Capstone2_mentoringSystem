@@ -40,9 +40,10 @@ public class CourseService {
             return "category id error";
         }
         if (course.getType().equalsIgnoreCase("one-to-one")) {
-            course.setCapacity(1);
+            course.setMaxCapacity(1);
             course.setGroupStatus("ready to start");
         }
+        course.setCapacity(0);
         course.setAdminStatus("pending");
         course.setGroupStatus("waiting for members");
         course.setRating(0.0);
@@ -66,7 +67,7 @@ public class CourseService {
             oldCourse.setTitle(course.getTitle());
             oldCourse.setDescription(course.getDescription());
             oldCourse.setType(course.getType());
-            oldCourse.setCapacity(course.getCapacity());
+            oldCourse.setMaxCapacity(course.getMaxCapacity());
             oldCourse.setPrice(course.getPrice());
             oldCourse.setLevel(course.getLevel());
             oldCourse.setLocation(course.getLocation());
