@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class User {
     private String username;
     @NotEmpty(message = "Sorry, the user password can't be empty, please try again")
     @Size(min = 8, max = 16, message = "Sorry, the user password can't be less than 8 or longer than 16, please try again")
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$$", message = "Sorry, the user password must have at least 1 uppercase, 1 lowercase, 1 number, please try again")
+    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$", message = "Sorry, the user password must have at least 1 uppercase, 1 lowercase, 1 number, please try again")
     @Column(columnDefinition = "varchar(16) not null")
     private String password;
     @Email(message = "Sorry, the user email must follow a valid email format, please try again")
@@ -52,6 +53,7 @@ public class User {
     private Double balance;
     @NotNull(message = "Sorry, the user date of birth can't be empty, please try again")
     @Column(columnDefinition = "date not null")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     @Column(columnDefinition = "datetime")
     private LocalDateTime registrationDate;
