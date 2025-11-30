@@ -28,12 +28,6 @@ public class Course {
     @Pattern(regexp = "one-to-one|group", message = "Sorry, the course type must be 'one-to-one' or 'group', please try again")
     @Column(columnDefinition = "varchar(10) not null")
     private String type;
-    @Positive(message = "Sorry, the course max capacity must be a positive number, please try again")
-    @Column(columnDefinition = "int not null default 1")
-    private Integer maxCapacity;
-    @PositiveOrZero(message = "Sorry, the course capacity must be a positive number, please try again")
-    @Column(columnDefinition = "int not null default 0")
-    private Integer capacity;
     @NotNull(message = "Sorry, the course price can't be empty, please try again")
     @Positive(message = "Sorry, the course price must be a positive number, please try again")
     @Column(columnDefinition = "float not null")

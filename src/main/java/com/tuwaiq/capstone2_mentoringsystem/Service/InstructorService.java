@@ -131,16 +131,16 @@ public class InstructorService {
         if (course==null){
             return "course id error";
         }
-        if (course.getCapacity()>=course.getMaxCapacity()){
-            return "course capacity error";
-        }
         CourseSession courseSession= courseSessionRepository.findCourseSessionById(enrollment.getCourseSessionId());
         if (courseSession==null){
             return "course session id error";
         }
-        course.setCapacity(course.getCapacity()+1);
+        if (courseSession.getCapacity()>=courseSession.getMaxCapacity()){
+            return "course capacity error";
+        }
+        courseSession.setCapacity(courseSession.getCapacity()+1);
         if (course.getType().equalsIgnoreCase("group")){
-            if (course.getCapacity().equals(course.getMaxCapacity())){
+            if (courseSession.getCapacity().equals(courseSession.getMaxCapacity())){
                 course.setGroupStatus("ready to start");
                 courseSession.setOccupied(true);
             }

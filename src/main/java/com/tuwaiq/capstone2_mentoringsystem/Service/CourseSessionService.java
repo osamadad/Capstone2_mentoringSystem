@@ -32,6 +32,11 @@ public class CourseSessionService {
         if (checkSessionConflict(courseSession.getStartDate(), courseSession.getEndDate(), courseSession.getStartTime(), courseSession.getEndTime())) {
             return "course session time error";
         } else {
+            if (course.getType().equalsIgnoreCase("one-to-one")) {
+                courseSession.setMaxCapacity(1);
+                course.setGroupStatus("ready to start");
+            }
+            courseSession.setCapacity(0);
             courseSession.setOccupied(false);
             courseSessionRepository.save(courseSession);
             return "ok";
@@ -61,6 +66,7 @@ public class CourseSessionService {
             oldCourseSession.setEndDate(courseSession.getEndDate());
             oldCourseSession.setStartTime(courseSession.getStartTime());
             oldCourseSession.setEndTime(courseSession.getEndTime());
+            oldCourseSession.setMaxCapacity(courseSession.getMaxCapacity());
             oldCourseSession.setOccupied(courseSession.getOccupied());
             if (!oldCourseSession.getCourseId().equals(courseSession.getCourseId())) {
                 return "course id mismatch";
